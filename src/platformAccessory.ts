@@ -222,7 +222,7 @@ export class SamsungACPlatformAccessory {
           // // return "this.handleCurrentHeaterCoolerStateGet()" as currentMode
           // // does this execute "this.handleCurrentHeaterCoolerStateGet()" as well?
         } else { // if not
-          return = this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE; 
+          return this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE; 
           // return this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE; 
           // // return "this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE" as currentMode
         }
