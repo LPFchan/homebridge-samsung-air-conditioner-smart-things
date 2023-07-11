@@ -9,7 +9,7 @@
         "title": "Name",
         "type": "string",
         "required": true,
-        "default": "homebridge-samsung-air-conditioner-smart-things"
+        "default": "homebridge-samsung-air-conditioner-smartthings"
       },
       "token": {
         "title": "Token",
