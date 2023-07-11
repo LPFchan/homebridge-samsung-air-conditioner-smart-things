@@ -6,4 +6,4 @@ export const PLATFORM_NAME = 'HomebridgeSamsungACSmartThings';
 /**
  * This must match the name of your plugin as defined the package.json
  */
-export const PLUGIN_NAME = 'homebridge-samsung-air-conditioner-smart-things';
+export const PLUGIN_NAME = 'homebridge-samsung-air-conditioner-smartthings';
