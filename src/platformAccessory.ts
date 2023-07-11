@@ -5,7 +5,7 @@ import { SamsungAPI } from './samsungApi';
 
 export class SamsungACPlatformAccessory {
   private acService: Service;
-  private fanV2Service: Service;
+  // private fanV2Service: Service;
   private humidityService: Service | undefined;
 
   private states = {
@@ -20,26 +20,26 @@ export class SamsungACPlatformAccessory {
     Auto: 'aIComfort',
   };
 
-  private fanMode = {
-    Auto: { name: 'auto', rotation: 0 },
-    Low: { name: 'low', rotation: 25 },
-    Medium: { name: 'medium', rotation: 50 },
-    High: { name: 'high', rotation: 75 },
-    Turbo: { name: 'turbo', rotation: 100 },
-  };
+  // private fanMode = {
+  //   Auto: { name: 'auto', rotation: 0 },
+  //   Low: { name: 'low', rotation: 25 },
+  //   Medium: { name: 'medium', rotation: 50 },
+  //   High: { name: 'high', rotation: 75 },
+  //   Turbo: { name: 'turbo', rotation: 100 },
+  // };
 
-  private swingMode = {
-    All: 'all',
-    Fixed: 'fixed',
-  };
+  // private swingMode = {
+  //   All: 'all',
+  //   Fixed: 'fixed',
+  // };
 
-  private windFreeMode = {
-    Off: 'off', // maps to SWING_ENABLED
-    windFree: 'windFree', // maps to SWING_DISABLED
-  };
+  // private windFreeMode = {
+  //   Off: 'off', // maps to SWING_ENABLED
+  //   windFree: 'windFree', // maps to SWING_DISABLED
+  // };
 
-  private defaultTemperature = 21;
-  private defaultHumidity = 40;
+  private defaultTemperature = 27;
+  private defaultHumidity = 50;
 
   constructor(
     private readonly platform: SamsungAC,
@@ -58,19 +58,24 @@ export class SamsungACPlatformAccessory {
 
     // register handlers for the On/Off Characteristic
     this.acService.getCharacteristic(this.platform.Characteristic.Active)
+      // Active
+      // 0:inactive  1:active
       .onSet(this.handleHeaterCoolerActiveSet.bind(this))
       .onGet(this.handleHeaterCoolerActiveGet.bind(this));
 
     this.acService.getCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState)
+      // Current Heater-Cooler State
+      // 0:inactive  1:idle  2:heating  3:cooling
+      .setProps(validValues: [0,1,3])
       .onGet(this.handleCurrentHeaterCoolerStateGet.bind(this));
 
     this.acService.getCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState)
+      // Target Heater-Cooler State
+      // 0:auto  1:heat  2:cool
+      .setProps(validValues: [2])
       .onGet(this.handleTargetHeaterCoolerStateGet.bind(this))
       .onSet(this.handleTargetHeaterCoolerStateSet.bind(this));
-      .setProps({
-        validValues: [2]
-      })
-
+      
     this.acService.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
       .onGet(this.handleCurrentTemperatureGet.bind(this));
 
@@ -85,71 +90,69 @@ export class SamsungACPlatformAccessory {
       .onSet(this.handleCoolingTemperatureSet.bind(this))
       .onGet(this.handleCoolingTemperatureGet.bind(this));
 
-    this.acService.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
-      .setProps(temperatureProps)
-      .onSet(this.handleCoolingTemperatureSet.bind(this))
-      .onGet(this.handleHeatingTemperatureGet.bind(this));
+    // Heating Disabled
+    // this.acService.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
+    //   .setProps(temperatureProps)
+    //   .onSet(this.handleCoolingTemperatureSet.bind(this))
+    //   .onGet(this.handleHeatingTemperatureGet.bind(this));
 
-    /**
-     *  FanV2 Service
-     */
-    this.fanV2Service = this.accessory.getService(this.platform.Service.Fanv2)
-      || this.accessory.addService(this.platform.Service.Fanv2);
+    // FanV2 Service Disabled
+    // /**
+    //  *  FanV2 Service
+    //  */
+    // this.fanV2Service = this.accessory.getService(this.platform.Service.Fanv2)
+    //   || this.accessory.addService(this.platform.Service.Fanv2);
+    // 
+    // this.fanV2Service.getCharacteristic(this.platform.Characteristic.Active)
+    //   .onSet(this.handleFanActiveSet.bind(this))
+    //   .onGet(this.handleFanActiveGet.bind(this));
+    // 
+    // const rotationProps = {
+    //   minValue: 0,
+    //   maxValue: 100,
+    //   minStep: 25,
+    // };
 
-    this.fanV2Service.getCharacteristic(this.platform.Characteristic.Active)
-      .onSet(this.handleFanActiveSet.bind(this))
-      .onGet(this.handleFanActiveGet.bind(this));
+    // // register handlers for the Fan Rotation Speed Characteristic
+    // this.fanV2Service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
+    //   .setProps(rotationProps)
+    //   .onSet(this.handleRotationSpeedSet.bind(this))
+    //   .onGet(this.handleRotationSpeedGet.bind(this));
 
-    const rotationProps = {
-      minValue: 0,
-      maxValue: 100,
-      minStep: 25,
-    };
+    // // register handlers for the Target Fan State Characteristic
+    // this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
+    //   .onGet(this.handleFanActiveGet.bind(this));
 
-    // register handlers for the Fan Rotation Speed Characteristic
-    this.fanV2Service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
-      .setProps(rotationProps)
-      .onSet(this.handleRotationSpeedSet.bind(this))
-      .onGet(this.handleRotationSpeedGet.bind(this));
+    // // register handlers for the Target Fan State Characteristic
+    // this.fanV2Service.getCharacteristic(this.platform.Characteristic.TargetFanState)
+    //   .onSet(this.handleTargetFanStateSet.bind(this))
+    //   .onGet(this.handleTargetFanStateGet.bind(this));
 
-    // register handlers for the Target Fan State Characteristic
-    this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
-      .onGet(this.handleFanActiveGet.bind(this));
+    // // If WindFree is available, the "oscillating" button in Home should control the windFree option.
+    // // Otherwise, limited oscillation support is available
+    // if (this.platform.config.windFreeSupported) {
+    //   //  register handlers for the WindFree Characteristic
+    //   this.fanV2Service.getCharacteristic(this.platform.Characteristic.SwingMode)
+    //     .onSet(this.handleWindFreeModeSet.bind(this))
+    //     .onGet(this.handleWindFreeModeGet.bind(this));
 
-    // register handlers for the Target Fan State Characteristic
-    this.fanV2Service.getCharacteristic(this.platform.Characteristic.TargetFanState)
-      .onSet(this.handleTargetFanStateSet.bind(this))
-      .onGet(this.handleTargetFanStateGet.bind(this));
+      // // register handlers for the Fan Swing Mode Characteristic
+      // this.acService.getCharacteristic(this.platform.Characteristic.SwingMode)
+      //   .onSet(this.handleSwingModeSet.bind(this))
+      //   .onGet(this.handleSwingModeGet.bind(this));
+    // } else {
+    //   // register handlers for the Fan Swing Mode Characteristic
+    //   this.fanV2Service.getCharacteristic(this.platform.Characteristic.SwingMode)
+    //     .onSet(this.handleSwingModeSet.bind(this))
+    //     .onGet(this.handleSwingModeGet.bind(this));
+    // }
 
-    // If WindFree is available, the "oscillating" button in Home should control the windFree option.
-    // Otherwise, limited oscillation support is available
-    if (this.platform.config.windFreeSupported) {
-      //  register handlers for the WindFree Characteristic
-      this.fanV2Service.getCharacteristic(this.platform.Characteristic.SwingMode)
-        .onSet(this.handleWindFreeModeSet.bind(this))
-        .onGet(this.handleWindFreeModeGet.bind(this));
+    // Humidity Service always enabled
+    this.humidityService = this.accessory.getService(this.platform.Service.HumiditySensor)
+      || this.accessory.addService(this.platform.Service.HumiditySensor);
 
-      // register handlers for the Fan Swing Mode Characteristic
-      this.acService.getCharacteristic(this.platform.Characteristic.SwingMode)
-        .onSet(this.handleSwingModeSet.bind(this))
-        .onGet(this.handleSwingModeGet.bind(this));
-    } else {
-      // register handlers for the Fan Swing Mode Characteristic
-      this.fanV2Service.getCharacteristic(this.platform.Characteristic.SwingMode)
-        .onSet(this.handleSwingModeSet.bind(this))
-        .onGet(this.handleSwingModeGet.bind(this));
-    }
-
-    /**
-     *  Humidity Service if enabled
-     */
-    if (this.platform.config.showHumidity) {
-      this.humidityService = this.accessory.getService(this.platform.Service.HumiditySensor)
-        || this.accessory.addService(this.platform.Service.HumiditySensor);
-
-      this.humidityService.getCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity)
-        .onGet(this.handleCurrentHumidityGet.bind(this));
-    }
+    this.humidityService.getCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity)
+      .onGet(this.handleCurrentHumidityGet.bind(this));
   }
 
   /**
@@ -189,9 +192,9 @@ export class SamsungACPlatformAccessory {
         this.handleTargetHeaterCoolerStateSet(this.platform.Characteristic.TargetHeaterCoolerState.AUTO)
           .then(() => this.handleRotationSpeedGet());
       }
-      // windFree mode (if supported) cannot be activated directly, the device will start in normal mode
-      this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
-        .updateValue(this.platform.Characteristic.CurrentFanState.BLOWING_AIR);
+      // // windFree mode (if supported) cannot be activated directly, the device will start in normal mode
+      // this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
+      //   .updateValue(this.platform.Characteristic.CurrentFanState.BLOWING_AIR);
     } else {
       statusValue = this.states.Off;
       this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
@@ -347,24 +350,25 @@ export class SamsungACPlatformAccessory {
 
     return currentValue;
   }
+  
+  // Heating Disabled
+  // async handleHeatingTemperatureGet() {
+  //   let currentValue = this.defaultTemperature;
+  //   // get value for DesiredTemperature
+  //   await SamsungAPI.getDesiredTemperature(this.accessory.context.device.deviceId, this.accessory.context.token)
+  //     .then((temperature) => {
+  //       if (this.accessory.context.temperatureUnit === 'F') {
+  //         temperature = SamsungACPlatformAccessory.toCelsius(temperature);
+  //       }
+  //       currentValue = temperature;
+  //       this.acService.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
+  //         .updateValue(temperature);
+  //     }).catch((error) => {
+  //       this.platform.log.warn(error);
+  //     });
 
-  async handleHeatingTemperatureGet() {
-    let currentValue = this.defaultTemperature;
-    // get value for DesiredTemperature
-    await SamsungAPI.getDesiredTemperature(this.accessory.context.device.deviceId, this.accessory.context.token)
-      .then((temperature) => {
-        if (this.accessory.context.temperatureUnit === 'F') {
-          temperature = SamsungACPlatformAccessory.toCelsius(temperature);
-        }
-        currentValue = temperature;
-        this.acService.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
-          .updateValue(temperature);
-      }).catch((error) => {
-        this.platform.log.warn(error);
-      });
-
-    return currentValue;
-  }
+  //   return currentValue;
+  // }
 
   async handleCoolingTemperatureSet(temp) {
     // set this to a valid value for DesiredTemperature
@@ -374,304 +378,305 @@ export class SamsungACPlatformAccessory {
     await SamsungAPI.setDesiredTemperature(this.accessory.context.device.deviceId, temp, this.accessory.context.token);
   }
 
-  /**
-   * Handle requests to get the current value of the "Active" characteristic of the Fan V2 Service
-   */
-  async handleFanActiveGet() {
-    // set this to a valid value for Active
-    let currentValue = this.platform.Characteristic.Active.INACTIVE;
-    await SamsungAPI.getDeviceStatus(this.accessory.context.device.deviceId, this.accessory.context.token)
-      .then((status) => {
-        if (status === this.states.On) {
-          currentValue = this.platform.Characteristic.Active.ACTIVE;
-        }
+  // FanV2 Disabled
+  // /**
+  //  * Handle requests to get the current value of the "Active" characteristic of the Fan V2 Service
+  //  */
+  // async handleFanActiveGet() {
+  //   // set this to a valid value for Active
+  //   let currentValue = this.platform.Characteristic.Active.INACTIVE;
+  //   await SamsungAPI.getDeviceStatus(this.accessory.context.device.deviceId, this.accessory.context.token)
+  //     .then((status) => {
+  //       if (status === this.states.On) {
+  //         currentValue = this.platform.Characteristic.Active.ACTIVE;
+  //       }
 
-        // The device status maps directly to the Active characteristic of the Fan service
-        this.fanV2Service.getCharacteristic(this.platform.Characteristic.Active)
-          .updateValue(currentValue);
+  //       // The device status maps directly to the Active characteristic of the Fan service
+  //       this.fanV2Service.getCharacteristic(this.platform.Characteristic.Active)
+  //         .updateValue(currentValue);
 
-        if (currentValue === this.platform.Characteristic.Active.ACTIVE) {
-          return this.handleWindFreeModeGet();
-        }
-      }).then((windFreeMode) => {
-        const currentState = this.platform.Characteristic.CurrentFanState;
-        let fanValue;
-        if (windFreeMode === undefined) {
-          // The fan is not active and the previous Promise did not return a new Promise
-          fanValue = currentState.INACTIVE;
-        } else if (this.platform.Characteristic.SwingMode.SWING_DISABLED) {
-          fanValue = currentState.IDLE;
-        } else {
-          // This value is also used if windFreeMode is not available
-          fanValue = currentState.BLOWING_AIR;
-        }
+  //       if (currentValue === this.platform.Characteristic.Active.ACTIVE) {
+  //         return this.handleWindFreeModeGet();
+  //       }
+  //     }).then((windFreeMode) => {
+  //       const currentState = this.platform.Characteristic.CurrentFanState;
+  //       let fanValue;
+  //       if (windFreeMode === undefined) {
+  //         // The fan is not active and the previous Promise did not return a new Promise
+  //         fanValue = currentState.INACTIVE;
+  //       } else if (this.platform.Characteristic.SwingMode.SWING_DISABLED) {
+  //         fanValue = currentState.IDLE;
+  //       } else {
+  //         // This value is also used if windFreeMode is not available
+  //         fanValue = currentState.BLOWING_AIR;
+  //       }
 
-        this.fanV2Service
-          .getCharacteristic(this.platform.Characteristic.CurrentFanState)
-          .updateValue(fanValue);
-      }).catch((error) => {
-        this.platform.log.warn(error);
-      });
+  //       this.fanV2Service
+  //         .getCharacteristic(this.platform.Characteristic.CurrentFanState)
+  //         .updateValue(fanValue);
+  //     }).catch((error) => {
+  //       this.platform.log.warn(error);
+  //     });
 
-    return currentValue;
-  }
+  //   return currentValue;
+  // }
 
-  /**
-   * Handle requests to set the "Active" characteristic of the Fan V2 Service
-   */
-  async handleFanActiveSet(value) {
-    let statusValue: string;
-    if (value === this.platform.Characteristic.Active.ACTIVE) {
-      statusValue = this.states.On;
-      this.handleFanActiveGet()
-        .then((activeModeFan) => {
-          if (activeModeFan === this.platform.Characteristic.Active.INACTIVE) {
-            return this.handleHeaterCoolerActiveGet();
-          }
-        }).then((activeModeAC) => {
-          if (activeModeAC === undefined) {
-          // The fan is already active and the previous Promise did not return a new Promise
-          // Nothing should be changed here, skipping the actions below
-            return;
-          } else if (activeModeAC === this.platform.Characteristic.Active.INACTIVE) {
-            SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, this.deviceMode.Fan, this.accessory.context.token);
-            // The fan will be set to "Low" and manual mode
-            this.fanV2Service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
-              .updateValue(this.fanMode.Low.rotation);
-            this.fanV2Service.getCharacteristic(this.platform.Characteristic.TargetFanState)
-              .updateValue(this.platform.Characteristic.TargetFanState.MANUAL);
-          } else {
-            this.handleRotationSpeedGet();
-          }
-        });
-      // windFree mode (if supported) cannot be activated directly, the device will start in normal mode
-      this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
-        .updateValue(this.platform.Characteristic.CurrentFanState.BLOWING_AIR);
-    } else {
-      statusValue = this.states.Off;
-      this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
-        .updateValue(this.platform.Characteristic.CurrentFanState.INACTIVE);
-    }
+  // /**
+  //  * Handle requests to set the "Active" characteristic of the Fan V2 Service
+  //  */
+  // async handleFanActiveSet(value) {
+  //   let statusValue: string;
+  //   if (value === this.platform.Characteristic.Active.ACTIVE) {
+  //     statusValue = this.states.On;
+  //     this.handleFanActiveGet()
+  //       .then((activeModeFan) => {
+  //         if (activeModeFan === this.platform.Characteristic.Active.INACTIVE) {
+  //           return this.handleHeaterCoolerActiveGet();
+  //         }
+  //       }).then((activeModeAC) => {
+  //         if (activeModeAC === undefined) {
+  //         // The fan is already active and the previous Promise did not return a new Promise
+  //         // Nothing should be changed here, skipping the actions below
+  //           return;
+  //         } else if (activeModeAC === this.platform.Characteristic.Active.INACTIVE) {
+  //           SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, this.deviceMode.Fan, this.accessory.context.token);
+  //           // The fan will be set to "Low" and manual mode
+  //           this.fanV2Service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
+  //             .updateValue(this.fanMode.Low.rotation);
+  //           this.fanV2Service.getCharacteristic(this.platform.Characteristic.TargetFanState)
+  //             .updateValue(this.platform.Characteristic.TargetFanState.MANUAL);
+  //         } else {
+  //           this.handleRotationSpeedGet();
+  //         }
+  //       });
+  //     // windFree mode (if supported) cannot be activated directly, the device will start in normal mode
+  //     this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
+  //       .updateValue(this.platform.Characteristic.CurrentFanState.BLOWING_AIR);
+  //   } else {
+  //     statusValue = this.states.Off;
+  //     this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
+  //       .updateValue(this.platform.Characteristic.CurrentFanState.INACTIVE);
+  //   }
+  // 
+  //   await SamsungAPI.setDeviceStatus(this.accessory.context.device.deviceId, statusValue, this.accessory.context.token);
+  // }
 
-    await SamsungAPI.setDeviceStatus(this.accessory.context.device.deviceId, statusValue, this.accessory.context.token);
-  }
+  // /**
+  //  * Handle requests to get the current value of the "Rotation Speed" characteristic
+  //  */
+  // async handleRotationSpeedGet() {
+  //   let currentValue = this.fanMode.Auto.rotation;
+  //   // set this to a valid value for RotationSpeed
+  //   await SamsungAPI.getFanMode(this.accessory.context.device.deviceId, this.accessory.context.token)
+  //     .then((fanMode) => {
+  //       switch (fanMode) {
+  //         case this.fanMode.Auto.name: {
+  //           currentValue = this.fanMode.Auto.rotation;
+  //           break;
+  //         }
+  //         case this.fanMode.Low.name: {
+  //           currentValue = this.fanMode.Low.rotation;
+  //           break;
+  //         }
+  //         case this.fanMode.Medium.name: {
+  //           currentValue = this.fanMode.Medium.rotation;
+  //           break;
+  //         }
+  //         case this.fanMode.High.name: {
+  //           currentValue = this.fanMode.High.rotation;
+  //           break;
+  //         }
+  //         case this.fanMode.Turbo.name: {
+  //           currentValue = this.fanMode.Turbo.rotation;
+  //           break;
+  //         }
+  //       }
 
-  /**
-   * Handle requests to get the current value of the "Rotation Speed" characteristic
-   */
-  async handleRotationSpeedGet() {
-    let currentValue = this.fanMode.Auto.rotation;
-    // set this to a valid value for RotationSpeed
-    await SamsungAPI.getFanMode(this.accessory.context.device.deviceId, this.accessory.context.token)
-      .then((fanMode) => {
-        switch (fanMode) {
-          case this.fanMode.Auto.name: {
-            currentValue = this.fanMode.Auto.rotation;
-            break;
-          }
-          case this.fanMode.Low.name: {
-            currentValue = this.fanMode.Low.rotation;
-            break;
-          }
-          case this.fanMode.Medium.name: {
-            currentValue = this.fanMode.Medium.rotation;
-            break;
-          }
-          case this.fanMode.High.name: {
-            currentValue = this.fanMode.High.rotation;
-            break;
-          }
-          case this.fanMode.Turbo.name: {
-            currentValue = this.fanMode.Turbo.rotation;
-            break;
-          }
-        }
+  //       this.fanV2Service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
+  //         .updateValue(currentValue);
+  //     }).then(() => this.handleTargetFanStateGet())
+  //     .catch((error) => {
+  //       this.platform.log.warn(error);
+  //     });
 
-        this.fanV2Service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
-          .updateValue(currentValue);
-      }).then(() => this.handleTargetFanStateGet())
-      .catch((error) => {
-        this.platform.log.warn(error);
-      });
+  //   return currentValue;
+  // }
 
-    return currentValue;
-  }
+  // /**
+  //  * Handle requests to set the "Rotation Speed" characteristic
+  //  */
+  // async handleRotationSpeedSet(speed) {
+  //   if (await this.handleHeaterCoolerActiveGet() === this.platform.Characteristic.Active.INACTIVE) {
+  //     // If the heater cooler system is inactive but the rotation speed was changed, fan mode is desired
+  //     await SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, this.deviceMode.Fan, this.accessory.context.token);
+  //   } else if (await this.handleCurrentHeaterCoolerStateGet() === this.platform.Characteristic.CurrentHeaterCoolerState.IDLE) {
+  //     // The fan speed cannot be changed if the heater cooler system is idle. Reverting.
+  //     await this.handleRotationSpeedGet();
+  //     return;
+  //   }
 
-  /**
-   * Handle requests to set the "Rotation Speed" characteristic
-   */
-  async handleRotationSpeedSet(speed) {
-    if (await this.handleHeaterCoolerActiveGet() === this.platform.Characteristic.Active.INACTIVE) {
-      // If the heater cooler system is inactive but the rotation speed was changed, fan mode is desired
-      await SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, this.deviceMode.Fan, this.accessory.context.token);
-    } else if (await this.handleCurrentHeaterCoolerStateGet() === this.platform.Characteristic.CurrentHeaterCoolerState.IDLE) {
-      // The fan speed cannot be changed if the heater cooler system is idle. Reverting.
-      await this.handleRotationSpeedGet();
-      return;
-    }
+  //   let modeValue = this.fanMode.Auto.name;
+  //   switch (speed) {
+  //     case 0: {
+  //       // If the target rotation speed is set to 0, the device should be turned off
+  //       return this.handleFanActiveSet(this.platform.Characteristic.Active.INACTIVE);
+  //     }
+  //     case this.fanMode.Low.rotation: {
+  //       modeValue = this.fanMode.Low.name;
+  //       break;
+  //     }
+  //     case this.fanMode.Medium.rotation: {
+  //       modeValue = this.fanMode.Medium.name;
+  //       break;
+  //     }
+  //     case this.fanMode.High.rotation: {
+  //       modeValue = this.fanMode.High.name;
+  //       break;
+  //     }
+  //     case this.fanMode.Turbo.rotation: {
+  //       modeValue = this.fanMode.Turbo.name;
+  //       break;
+  //     }
+  //   }
 
-    let modeValue = this.fanMode.Auto.name;
-    switch (speed) {
-      case 0: {
-        // If the target rotation speed is set to 0, the device should be turned off
-        return this.handleFanActiveSet(this.platform.Characteristic.Active.INACTIVE);
-      }
-      case this.fanMode.Low.rotation: {
-        modeValue = this.fanMode.Low.name;
-        break;
-      }
-      case this.fanMode.Medium.rotation: {
-        modeValue = this.fanMode.Medium.name;
-        break;
-      }
-      case this.fanMode.High.rotation: {
-        modeValue = this.fanMode.High.name;
-        break;
-      }
-      case this.fanMode.Turbo.rotation: {
-        modeValue = this.fanMode.Turbo.name;
-        break;
-      }
-    }
+  //   if (modeValue !== this.fanMode.Auto.name) {
+  //     // The fan speed indicates that manual mode is desired
+  //     this.fanV2Service.getCharacteristic(this.platform.Characteristic.TargetFanState)
+  //       .updateValue(this.platform.Characteristic.TargetFanState.MANUAL);
+  //   }
+  //   SamsungAPI.setFanMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token)
+  //     // After changing the fan mode, we definitely know that the fan is active
+  //     .then(() => this.handleFanActiveSet(this.platform.Characteristic.Active.ACTIVE));
+  // }
 
-    if (modeValue !== this.fanMode.Auto.name) {
-      // The fan speed indicates that manual mode is desired
-      this.fanV2Service.getCharacteristic(this.platform.Characteristic.TargetFanState)
-        .updateValue(this.platform.Characteristic.TargetFanState.MANUAL);
-    }
-    SamsungAPI.setFanMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token)
-      // After changing the fan mode, we definitely know that the fan is active
-      .then(() => this.handleFanActiveSet(this.platform.Characteristic.Active.ACTIVE));
-  }
+  // /**
+  //  * Handle requests to get the current value of the "Target Fan State" characteristic
+  //  */
+  // async handleTargetFanStateGet() {
+  //   let currentValue = this.platform.Characteristic.TargetFanState.AUTO;
+  //   // set this to a valid value for TargetFanState
+  //   await SamsungAPI.getFanMode(this.accessory.context.device.deviceId, this.accessory.context.token)
+  //     .then((fanMode) => {
+  //       if (fanMode === this.fanMode.Auto.name) {
+  //         currentValue = this.platform.Characteristic.TargetFanState.AUTO;
+  //       } else {
+  //         currentValue = this.platform.Characteristic.TargetFanState.MANUAL;
+  //       }
 
-  /**
-   * Handle requests to get the current value of the "Target Fan State" characteristic
-   */
-  async handleTargetFanStateGet() {
-    let currentValue = this.platform.Characteristic.TargetFanState.AUTO;
-    // set this to a valid value for TargetFanState
-    await SamsungAPI.getFanMode(this.accessory.context.device.deviceId, this.accessory.context.token)
-      .then((fanMode) => {
-        if (fanMode === this.fanMode.Auto.name) {
-          currentValue = this.platform.Characteristic.TargetFanState.AUTO;
-        } else {
-          currentValue = this.platform.Characteristic.TargetFanState.MANUAL;
-        }
+  //       this.fanV2Service.getCharacteristic(this.platform.Characteristic.TargetFanState)
+  //         .updateValue(currentValue);
+  //     }).catch((error) => {
+  //       this.platform.log.warn(error);
+  //     });
 
-        this.fanV2Service.getCharacteristic(this.platform.Characteristic.TargetFanState)
-          .updateValue(currentValue);
-      }).catch((error) => {
-        this.platform.log.warn(error);
-      });
+  //   return currentValue;
+  // }
 
-    return currentValue;
-  }
+  // /**
+  //  * Handle requests to set the "Target Fan State" characteristic
+  //  */
+  // async handleTargetFanStateSet(value) {
+  //   if (await this.handleHeaterCoolerActiveGet() === this.platform.Characteristic.Active.INACTIVE) {
+  //     // The fan cannot be set to "auto" if the heater cooler system is not active.
+  //     this.fanV2Service.getCharacteristic(this.platform.Characteristic.TargetFanState)
+  //       .updateValue(this.platform.Characteristic.TargetFanState.MANUAL);
+  //     return;
+  //   }
 
-  /**
-   * Handle requests to set the "Target Fan State" characteristic
-   */
-  async handleTargetFanStateSet(value) {
-    if (await this.handleHeaterCoolerActiveGet() === this.platform.Characteristic.Active.INACTIVE) {
-      // The fan cannot be set to "auto" if the heater cooler system is not active.
-      this.fanV2Service.getCharacteristic(this.platform.Characteristic.TargetFanState)
-        .updateValue(this.platform.Characteristic.TargetFanState.MANUAL);
-      return;
-    }
+  //   let modeValue: string;
+  //   if (value === this.platform.Characteristic.TargetFanState.MANUAL) {
+  //     modeValue = this.fanMode.Medium.name;
+  //     this.fanV2Service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
+  //       .updateValue(this.fanMode.Medium.rotation);
+  //   } else {
+  //     modeValue = this.fanMode.Auto.name;
+  //     this.fanV2Service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
+  //       .updateValue(this.fanMode.Auto.rotation);
+  //   }
+  //   await SamsungAPI.setFanMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token);
+  // }
 
-    let modeValue: string;
-    if (value === this.platform.Characteristic.TargetFanState.MANUAL) {
-      modeValue = this.fanMode.Medium.name;
-      this.fanV2Service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
-        .updateValue(this.fanMode.Medium.rotation);
-    } else {
-      modeValue = this.fanMode.Auto.name;
-      this.fanV2Service.getCharacteristic(this.platform.Characteristic.RotationSpeed)
-        .updateValue(this.fanMode.Auto.rotation);
-    }
-    await SamsungAPI.setFanMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token);
-  }
+  // /**
+  //  * Handle requests to get the current value of the "Swing Mode" characteristic, used for the windFree support
+  //  */
+  // async handleWindFreeModeGet() {
+  //   let currentValue = this.platform.Characteristic.SwingMode.SWING_ENABLED;
+  //   if (this.platform.config.windFreeSupported) {
+  //     // set this to a valid value for SwingMode
+  //     await SamsungAPI.getWindFreeMode(this.accessory.context.device.deviceId, this.accessory.context.token)
+  //       .then((windFreeMode) => {
+  //         if (windFreeMode === this.windFreeMode.windFree) {
+  //           currentValue = this.platform.Characteristic.SwingMode.SWING_DISABLED;
+  //           this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
+  //             .updateValue(this.platform.Characteristic.CurrentFanState.IDLE);
+  //         } else {
+  //           this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
+  //             .updateValue(this.platform.Characteristic.CurrentFanState.BLOWING_AIR);
+  //         }
 
-  /**
-   * Handle requests to get the current value of the "Swing Mode" characteristic, used for the windFree support
-   */
-  async handleWindFreeModeGet() {
-    let currentValue = this.platform.Characteristic.SwingMode.SWING_ENABLED;
-    if (this.platform.config.windFreeSupported) {
-      // set this to a valid value for SwingMode
-      await SamsungAPI.getWindFreeMode(this.accessory.context.device.deviceId, this.accessory.context.token)
-        .then((windFreeMode) => {
-          if (windFreeMode === this.windFreeMode.windFree) {
-            currentValue = this.platform.Characteristic.SwingMode.SWING_DISABLED;
-            this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
-              .updateValue(this.platform.Characteristic.CurrentFanState.IDLE);
-          } else {
-            this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
-              .updateValue(this.platform.Characteristic.CurrentFanState.BLOWING_AIR);
-          }
+  //         this.fanV2Service.getCharacteristic(this.platform.Characteristic.SwingMode)
+  //           .updateValue(currentValue);
+  //       }).catch((error) => {
+  //         this.platform.log.warn(error);
+  //       });
+  //   }
 
-          this.fanV2Service.getCharacteristic(this.platform.Characteristic.SwingMode)
-            .updateValue(currentValue);
-        }).catch((error) => {
-          this.platform.log.warn(error);
-        });
-    }
+  //   return currentValue;
+  // }
 
-    return currentValue;
-  }
-
-  /**
-   * Handle requests to set the "Swing Mode" characteristic, used for the windFree support
-   */
-  async handleWindFreeModeSet(value) {
-    let statusValue: string;
-    if (value === 1) {
-      statusValue = this.windFreeMode.Off;
-      this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
-        .updateValue(this.platform.Characteristic.CurrentFanState.BLOWING_AIR);
-    } else {
-      statusValue = this.windFreeMode.windFree;
-      this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
-        .updateValue(this.platform.Characteristic.CurrentFanState.IDLE);
-    }
-    await SamsungAPI.setWindFreeMode(this.accessory.context.device.deviceId, statusValue, this.accessory.context.token);
-  }
+  // /**
+  //  * Handle requests to set the "Swing Mode" characteristic, used for the windFree support
+  //  */
+  // async handleWindFreeModeSet(value) {
+  //   let statusValue: string;
+  //   if (value === 1) {
+  //     statusValue = this.windFreeMode.Off;
+  //     this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
+  //       .updateValue(this.platform.Characteristic.CurrentFanState.BLOWING_AIR);
+  //   } else {
+  //     statusValue = this.windFreeMode.windFree;
+  //     this.fanV2Service.getCharacteristic(this.platform.Characteristic.CurrentFanState)
+  //       .updateValue(this.platform.Characteristic.CurrentFanState.IDLE);
+  //   }
+  //   await SamsungAPI.setWindFreeMode(this.accessory.context.device.deviceId, statusValue, this.accessory.context.token);
+  // }
 
 
-  /**
-   * Handle requests to get the current value of the "Swing Mode" characteristic
-   */
-  async handleSwingModeGet() {
-    let currentValue = this.platform.Characteristic.SwingMode.SWING_ENABLED;
-    // set this to a valid value for SwingMode
-    await SamsungAPI.getFanOscillationMode(this.accessory.context.device.deviceId, this.accessory.context.token)
-      .then((fanOscillationMode) => {
-        if (fanOscillationMode === this.swingMode.Fixed) {
-          // Other values for `fanOscillationMode` are possible but are not represented in HomeKit
-          currentValue = this.platform.Characteristic.SwingMode.SWING_DISABLED;
-        }
+  // /**
+  //  * Handle requests to get the current value of the "Swing Mode" characteristic
+  //  */
+  // async handleSwingModeGet() {
+  //   let currentValue = this.platform.Characteristic.SwingMode.SWING_ENABLED;
+  //   // set this to a valid value for SwingMode
+  //   await SamsungAPI.getFanOscillationMode(this.accessory.context.device.deviceId, this.accessory.context.token)
+  //     .then((fanOscillationMode) => {
+  //       if (fanOscillationMode === this.swingMode.Fixed) {
+  //         // Other values for `fanOscillationMode` are possible but are not represented in HomeKit
+  //         currentValue = this.platform.Characteristic.SwingMode.SWING_DISABLED;
+  //       }
 
-        if (this.platform.config.windFreeSupported) {
-          this.acService.getCharacteristic(this.platform.Characteristic.SwingMode)
-            .updateValue(currentValue);
-        } else {
-          this.fanV2Service.getCharacteristic(this.platform.Characteristic.SwingMode)
-            .updateValue(currentValue);
-        }
+  //       if (this.platform.config.windFreeSupported) {
+  //         this.acService.getCharacteristic(this.platform.Characteristic.SwingMode)
+  //           .updateValue(currentValue);
+  //       } else {
+  //         this.fanV2Service.getCharacteristic(this.platform.Characteristic.SwingMode)
+  //           .updateValue(currentValue);
+  //       }
 
-      }).catch((error) => {
-        this.platform.log.warn(error);
-      });
+  //     }).catch((error) => {
+  //       this.platform.log.warn(error);
+  //     });
 
-    return currentValue;
-  }
+  //   return currentValue;
+  // }
 
-  /**
-   * Handle requests to set the "Swing Mode" characteristic
-   */
-  async handleSwingModeSet(value) {
-    const statusValue = value === 1 ? this.swingMode.All : this.swingMode.Fixed ;
-    await SamsungAPI.setFanOscillationMode(this.accessory.context.device.deviceId, statusValue, this.accessory.context.token);
-  }
+  // /**
+  //  * Handle requests to set the "Swing Mode" characteristic
+  //  */
+  // async handleSwingModeSet(value) {
+  //   const statusValue = value === 1 ? this.swingMode.All : this.swingMode.Fixed ;
+  //   await SamsungAPI.setFanOscillationMode(this.accessory.context.device.deviceId, statusValue, this.accessory.context.token);
+  // }
 
   private static toCelsius(fTemperature) {
     return Math.round((5/9) * (fTemperature - 32));
