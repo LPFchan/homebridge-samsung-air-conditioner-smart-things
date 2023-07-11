@@ -76,7 +76,6 @@ export class SamsungACPlatformAccessory {
       // Current Heater-Cooler State
       // 0:inactive  1:idle  2:heating  3:cooling
       .setProps({
-        format: Formats.UINT8,
         maxValue: 0,
         minValue: 3, 
         validValues: [0,1,3]
@@ -87,7 +86,6 @@ export class SamsungACPlatformAccessory {
       // Target Heater-Cooler State
       // 0:auto  1:heat  2:cool
       .setProps({
-        format: Formats.UINT8,
         maxValue: 0,
         minValue: 2,
         validValues: [0,2]
