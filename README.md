@@ -6,7 +6,7 @@ This fork intends to strip away most of the optional components and make it a "d
 
 ## Installation 
 1. Install [Homebridge](https://github.com/nfarina/homebridge).
-2. Install this plugin by running `npm install -g homebridge-samsung-air-conditioner-smart-things`.
+2. Install this plugin by running `npm install -g homebridge-samsung-air-conditioner-smartthings`.
 3. Setup your Air conditioner devices in the smartthings app.
 4. Login and generate a new [token](https://account.smartthings.com/tokens#) for the smartthings api. 
      - Make sure you select all scopes in the devices section.
