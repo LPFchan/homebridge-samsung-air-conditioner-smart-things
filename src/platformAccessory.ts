@@ -4,7 +4,7 @@ import { SamsungAC } from './platform';
 import { SamsungAPI } from './samsungApi';
 
 export class SamsungACPlatformAccessory {
-  private heatingCoolingService: Service;
+  private acService: Service;
   private humidityService: Service | undefined;
 
   private states = {
@@ -32,24 +32,24 @@ export class SamsungACPlatformAccessory {
       .setCharacteristic(this.platform.Characteristic.Model, accessory.context.device.deviceTypeName)
       .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.device.deviceId);
 
-    this.heatingCoolingService = this.accessory.getService(this.platform.Service.Thermostat)
+    this.acService = this.accessory.getService(this.platform.Service.Thermostat)
       || this.accessory.addService(this.platform.Service.Thermostat);
 
-    this.heatingCoolingService.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.label);
+    this.acService.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.label);
 
     // register handlers for the On/Off Characteristic
-    this.heatingCoolingService.getCharacteristic(this.platform.Characteristic.Active)
+    this.acService.getCharacteristic(this.platform.Characteristic.Active)
       .onSet(this.handleHeatingCoolingActiveSet.bind(this))
       .onGet(this.handleHeatingCoolingActiveGet.bind(this));
 
-    this.heatingCoolingService.getCharacteristic(this.platform.Characteristic.CurrentHeatingCoolingState)
+    this.acService.getCharacteristic(this.platform.Characteristic.CurrentHeatingCoolingState)
       .onGet(this.handleCurrentHeatingCoolingStateGet.bind(this));
 
-    this.heatingCoolingService.getCharacteristic(this.platform.Characteristic.TargetHeatingCoolingState)
+    this.acService.getCharacteristic(this.platform.Characteristic.TargetHeatingCoolingState)
       .onGet(this.handleTargetHeatingCoolingStateGet.bind(this))
       .onSet(this.handleTargetHeatingCoolingStateSet.bind(this));
 
-    this.heatingCoolingService.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
+    this.acService.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
       .onGet(this.handleCurrentTemperatureGet.bind(this));
 
     const temperatureProps = {
@@ -58,17 +58,44 @@ export class SamsungACPlatformAccessory {
       minStep: 1,
     };
 
+    this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature)
+      .setProps(temperatureProps)
+      .onSet(this.handleCoolingTemperatureSet.bind(this))
+      .onGet(this.handleCoolingTemperatureGet.bind(this));
+
+    this.acService.getCharacteristic(this.platform.Characteristic.TargetTemperature)
+      .onGet(this.handleTargetTemperatureGet.bind(this))
+      .onSet(this.handleTargetTemperatureSet.bind(this));
+
+    
     /** 
-     * Humidity Service always enabled
+     * Current Humidity integrated into the thermostat
      */
-
-    this.humidityService = this.accessory.getService(this.platform.Service.HumiditySensor)
-      || this.accessory.addService(this.platform.Service.HumiditySensor);
-
-    this.humidityService.getCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity)
+    this.acService.getCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity)
       .onGet(this.handleCurrentHumidityGet.bind(this));
-  }
+  } // contructor ends
 
+/**
+ *  AC: handleActiveGet
+ *      handleActiveSet
+ *      handleCurrentHeaterCoolerStateGet (A)
+ *      handleTargetHeaterCoolerStateGet (B)
+ *      handleTargetHeaterCoolerStateSet (C)
+ *      handleCurrentTemperatureGet (D)
+ *      handleCoolerTemperatureGet (E)
+ *      handleHeaterTemperatureGet
+ *      handleCoolerTemperatureSet (F)
+ *
+ *  TH: handleCurrentHeatingCoolingStateGet (A)
+ *      handleTargetHeatingCoolingStateGet (B)
+ *      handleTargetHeatingCoolingStateSet (C)
+ *      handleCurrentTemperatureGet (D)
+ *      handleTargetTemperatureGet (E)
+ *      handleTargetTemperatureSet (F)
+ *      handleTemperatureDisplayUnitsGet
+ *      handleTemperatureDisplayUnitsSet
+ */
+  
   /**
    * Handle requests to get the current value of the "Active" characteristic of the Heating Cooling Service
    */
@@ -128,7 +155,7 @@ export class SamsungACPlatformAccessory {
           }
         }
 
-        this.heatingCoolingService.getCharacteristic(this.platform.Characteristic.CurrentHeatingCoolingState)
+        this.acService.getCharacteristic(this.platform.Characteristic.CurrentHeatingCoolingState)
           .updateValue(currentValue);
       }).catch((error) => {
         this.platform.log.warn(error);
@@ -158,7 +185,7 @@ export class SamsungACPlatformAccessory {
           }
         }
 
-        this.heatingCoolingService.getCharacteristic(this.platform.Characteristic.TargetHeatingCoolingState)
+        this.acService.getCharacteristic(this.platform.Characteristic.TargetHeatingCoolingState)
           .updateValue(currentValue);
       }).catch((error) => {
         this.platform.log.warn(error);
@@ -220,7 +247,7 @@ export class SamsungACPlatformAccessory {
           temperature = SamsungACPlatformAccessory.toCelsius(temperature);
         }
         currentValue = temperature;
-        this.heatingCoolingService.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
+        this.acService.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
           .updateValue(temperature);
       }).catch((error) => {
         this.platform.log.warn(error);
@@ -229,7 +256,7 @@ export class SamsungACPlatformAccessory {
     return currentValue;
   }
 
-  async handleCoolingTemperatureGet() {
+  async handleTargetTemperatureGet() {
     let currentValue = this.defaultTemperature;
     // get value for DesiredTemperature
     await SamsungAPI.getDesiredTemperature(this.accessory.context.device.deviceId, this.accessory.context.token)
@@ -238,7 +265,7 @@ export class SamsungACPlatformAccessory {
           temperature = SamsungACPlatformAccessory.toCelsius(temperature);
         }
         currentValue = temperature;
-        this.heatingCoolingService.getCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature)
+        this.acService.getCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature)
           .updateValue(temperature);
         return temperature;
       }).catch((error) => {
@@ -248,25 +275,7 @@ export class SamsungACPlatformAccessory {
     return currentValue;
   }
 
-  async handleHeatingTemperatureGet() {
-    let currentValue = this.defaultTemperature;
-    // get value for DesiredTemperature
-    await SamsungAPI.getDesiredTemperature(this.accessory.context.device.deviceId, this.accessory.context.token)
-      .then((temperature) => {
-        if (this.accessory.context.temperatureUnit === 'F') {
-          temperature = SamsungACPlatformAccessory.toCelsius(temperature);
-        }
-        currentValue = temperature;
-        this.heatingCoolingService.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
-          .updateValue(temperature);
-      }).catch((error) => {
-        this.platform.log.warn(error);
-      });
-
-    return currentValue;
-  }
-
-  async handleCoolingTemperatureSet(temp) {
+  async handleTargetTemperatureSet(temp) {
     // set this to a valid value for DesiredTemperature
     if (this.accessory.context.temperatureUnit === 'F') {
       temp = SamsungACPlatformAccessory.toFahrenheit(temp);
