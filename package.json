@@ -3,14 +3,14 @@
   "displayName": "Homebridge Samsung Air Conditioner Smartthings",
   "name": "homebridge-samsung-air-conditioner-smart-things",
   "version": "1.0.9",
-  "description": "Homebridge plugin for controlling Samsung Air Conditioner using the smartthings api.",
+  "description": "Homebridge plugin for controlling Samsung Air Conditioner using the SmartThings api.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/teodoradima/homebridge-samsung-air-conditioner-smart-things.git"
+    "url": "https://github.com/LPFchan/homebridge-samsung-air-conditioner-smart-things.git"
   },
   "bugs": {
-    "url": "https://github.com/teodoradima/homebridge-samsung-air-conditioner-smart-things/issues"
+    "url": "https://github.com/LPFchan/homebridge-samsung-air-conditioner-smart-things/issues"
   },
   "engines": {
     "node": ">=10.17.0",
