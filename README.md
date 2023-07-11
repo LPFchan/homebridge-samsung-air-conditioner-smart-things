@@ -2,6 +2,8 @@
 
 Homebridge plugin for controlling Samsung Air Conditioner using the [smartthings api](https://smartthings.developer.samsung.com/docs/api-ref/st-api.html#tag/Devices). This setup doesn't require a smartthings hub, but all the interactions with the devices are done through the api, not on your local network.
 
+This fork intends to strip away most of the optional components and make it a "dumb" thermostat device.
+
 ## Installation 
 1. Install [Homebridge](https://github.com/nfarina/homebridge).
 2. Install this plugin by running `npm install -g homebridge-samsung-air-conditioner-smart-things`.
@@ -18,15 +20,15 @@ Homebridge plugin for controlling Samsung Air Conditioner using the [smartthings
 - If your Air conditioners support the WindFree option, enable the `windFreeSupported` option (config.json). This allows you to enable the WindFree mode through the "oscillation" settings of the _fan_ while the normal oscillation (fixed vs all directions) is available through the Air conditioner in Apple Home. This changes makes it easier to enable the WindFree mode if the fan and Air conditioner settings are grouped in Apple Home (which is the default if added through Homebridge).
 
 ## Features
-- Import all AC devices in your smartthings account
+- Import all AC devices in your SmartThings account
 - Turning AC on and off
 - Getting and setting target temperature
 - Getting current temperature
-- Getting and setting AC mode
-- Turning the fan on and off
-- Getting and setting fan operation mode (manual / automatic)
-- Getting and setting rotation speed of the fan 
-  - A target fan speed of automatic will report with a rotation speed of 0% as the actual rotation speed cannot be determined.
-- Getting and setting oscillation mode
-- Getting and setting WindFree mode (if supported)
-- Getting current humidity (if enabled)
+~~- Getting and setting AC mode~~
+~~- Turning the fan on and off~~
+~~- Getting and setting fan operation mode (manual / automatic)~~
+~~- Getting and setting rotation speed of the fan~~
+  ~~- A target fan speed of automatic will report with a rotation speed of 0% as the actual rotation speed cannot be determined.~~
+~~- Getting and setting oscillation mode~~
+~~- Getting and setting WindFree mode (if supported)~~
+- Getting current humidity ~~(if enabled)~~
