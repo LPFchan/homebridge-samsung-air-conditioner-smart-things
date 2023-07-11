@@ -68,9 +68,14 @@ export class SamsungACPlatformAccessory {
     // register handlers for the On/Off Characteristic
     this.acService.getCharacteristic(this.platform.Characteristic.Active)
       // Active
-      // 0:inactive  1:active
-      .onSet(this.handleHeaterCoolerActiveSet.bind(this))
-      .onGet(this.handleHeaterCoolerActiveGet.bind(this));
+      // 0:INACTIVE  1:ACTIVE
+      .setProps({
+        minValue: 0,
+        maxValue: 1, 
+        validValues: [0,1]
+      })
+      .onGet(this.handleHeaterCoolerActiveGet.bind(this))
+      .onSet(this.handleHeaterCoolerActiveSet.bind(this));
 
     this.acService.getCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState)
       // Current Heater-Cooler State
@@ -212,12 +217,12 @@ export class SamsungACPlatformAccessory {
     await SamsungAPI.getDeviceStatus(this.accessory.context.device.deviceId, this.accessory.context.token)
       .then((status) => { // feed the output from above
         if (status === this.states.On) { // if API returns 'on',
-          currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.ACTIVE; 
+          return this.platform.Characteristic.CurrentHeaterCoolerState.ACTIVE; 
           // return this.handleCurrentHeaterCoolerStateGet(); 
           // // return "this.handleCurrentHeaterCoolerStateGet()" as currentMode
           // // does this execute "this.handleCurrentHeaterCoolerStateGet()" as well?
         } else { // if not
-          currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE; 
+          return = this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE; 
           // return this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE; 
           // // return "this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE" as currentMode
         }
