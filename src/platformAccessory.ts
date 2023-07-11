@@ -4,7 +4,7 @@ import { SamsungAC } from './platform';
 import { SamsungAPI } from './samsungApi';
 
 export class SamsungACPlatformAccessory {
-  private heaterCoolerService: Service;
+  private acService: Service;
   private fanV2Service: Service;
   private humidityService: Service | undefined;
 
@@ -15,10 +15,9 @@ export class SamsungACPlatformAccessory {
 
   private deviceMode = {
     Cool: 'cool',
-    Heat: 'heat',
     Dry: 'dry',
     Fan: 'wind',
-    Auto: 'auto',
+    Auto: 'aIComfort',
   };
 
   private fanMode = {
@@ -52,24 +51,27 @@ export class SamsungACPlatformAccessory {
       .setCharacteristic(this.platform.Characteristic.Model, accessory.context.device.deviceTypeName)
       .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.device.deviceId);
 
-    this.heaterCoolerService = this.accessory.getService(this.platform.Service.HeaterCooler)
+    this.acService = this.accessory.getService(this.platform.Service.HeaterCooler)
       || this.accessory.addService(this.platform.Service.HeaterCooler);
 
-    this.heaterCoolerService.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.label);
+    this.acService.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.label);
 
     // register handlers for the On/Off Characteristic
-    this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.Active)
+    this.acService.getCharacteristic(this.platform.Characteristic.Active)
       .onSet(this.handleHeaterCoolerActiveSet.bind(this))
       .onGet(this.handleHeaterCoolerActiveGet.bind(this));
 
-    this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState)
+    this.acService.getCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState)
       .onGet(this.handleCurrentHeaterCoolerStateGet.bind(this));
 
-    this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState)
+    this.acService.getCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState)
       .onGet(this.handleTargetHeaterCoolerStateGet.bind(this))
       .onSet(this.handleTargetHeaterCoolerStateSet.bind(this));
+      .setProps({
+        validValues: [2]
+      })
 
-    this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
+    this.acService.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
       .onGet(this.handleCurrentTemperatureGet.bind(this));
 
     const temperatureProps = {
@@ -78,12 +80,12 @@ export class SamsungACPlatformAccessory {
       minStep: 1,
     };
 
-    this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature)
+    this.acService.getCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature)
       .setProps(temperatureProps)
       .onSet(this.handleCoolingTemperatureSet.bind(this))
       .onGet(this.handleCoolingTemperatureGet.bind(this));
 
-    this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
+    this.acService.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
       .setProps(temperatureProps)
       .onSet(this.handleCoolingTemperatureSet.bind(this))
       .onGet(this.handleHeatingTemperatureGet.bind(this));
@@ -128,7 +130,7 @@ export class SamsungACPlatformAccessory {
         .onGet(this.handleWindFreeModeGet.bind(this));
 
       // register handlers for the Fan Swing Mode Characteristic
-      this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.SwingMode)
+      this.acService.getCharacteristic(this.platform.Characteristic.SwingMode)
         .onSet(this.handleSwingModeSet.bind(this))
         .onGet(this.handleSwingModeGet.bind(this));
     } else {
@@ -226,7 +228,7 @@ export class SamsungACPlatformAccessory {
           }
         }
 
-        this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState)
+        this.acService.getCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState)
           .updateValue(currentValue);
       }).catch((error) => {
         this.platform.log.warn(error);
@@ -256,7 +258,7 @@ export class SamsungACPlatformAccessory {
           }
         }
 
-        this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState)
+        this.acService.getCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState)
           .updateValue(currentValue);
       }).catch((error) => {
         this.platform.log.warn(error);
@@ -318,7 +320,7 @@ export class SamsungACPlatformAccessory {
           temperature = SamsungACPlatformAccessory.toCelsius(temperature);
         }
         currentValue = temperature;
-        this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
+        this.acService.getCharacteristic(this.platform.Characteristic.CurrentTemperature)
           .updateValue(temperature);
       }).catch((error) => {
         this.platform.log.warn(error);
@@ -336,7 +338,7 @@ export class SamsungACPlatformAccessory {
           temperature = SamsungACPlatformAccessory.toCelsius(temperature);
         }
         currentValue = temperature;
-        this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature)
+        this.acService.getCharacteristic(this.platform.Characteristic.CoolingThresholdTemperature)
           .updateValue(temperature);
         return temperature;
       }).catch((error) => {
@@ -355,7 +357,7 @@ export class SamsungACPlatformAccessory {
           temperature = SamsungACPlatformAccessory.toCelsius(temperature);
         }
         currentValue = temperature;
-        this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
+        this.acService.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
           .updateValue(temperature);
       }).catch((error) => {
         this.platform.log.warn(error);
@@ -649,7 +651,7 @@ export class SamsungACPlatformAccessory {
         }
 
         if (this.platform.config.windFreeSupported) {
-          this.heaterCoolerService.getCharacteristic(this.platform.Characteristic.SwingMode)
+          this.acService.getCharacteristic(this.platform.Characteristic.SwingMode)
             .updateValue(currentValue);
         } else {
           this.fanV2Service.getCharacteristic(this.platform.Characteristic.SwingMode)
