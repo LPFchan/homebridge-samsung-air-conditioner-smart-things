@@ -212,19 +212,21 @@ export class SamsungACPlatformAccessory {
     await SamsungAPI.getDeviceStatus(this.accessory.context.device.deviceId, this.accessory.context.token)
       .then((status) => { // feed the output from above
         if (status === this.states.On) { // if API returns 'on',
-          return this.handleCurrentHeaterCoolerStateGet(); 
-            // return "this.handleCurrentHeaterCoolerStateGet()" as currentMode
-            // does this execute "this.handleCurrentHeaterCoolerStateGet()" as well?
+          currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.ACTIVE; 
+          // return this.handleCurrentHeaterCoolerStateGet(); 
+          // // return "this.handleCurrentHeaterCoolerStateGet()" as currentMode
+          // // does this execute "this.handleCurrentHeaterCoolerStateGet()" as well?
         } else { // if not
-          return this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE; 
-            // return "this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE" as currentMode
+          currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE; 
+          // return this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE; 
+          // // return "this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE" as currentMode
         }
-      }).then((currentMode) => { // feed the output from above
-        // The heater cooler system is not active if only the fan is operating (???)
-        if (currentMode !== this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE) { 
-          // if it returned "this.handleCurrentHeaterCoolerStateGet()" (which means it's on)
-          currentValue = this.platform.Characteristic.Active.ACTIVE; // return ACTIVE
-        }
+      // }).then((currentMode) => { // feed the output from above
+      //   // The heater cooler system is not active if only the fan is operating (???)
+      //   if (currentMode !== this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE) { 
+      //     // if it returned "this.handleCurrentHeaterCoolerStateGet()" (which means it's on)
+      //     currentValue = this.platform.Characteristic.Active.ACTIVE; // return ACTIVE
+      //   }
       }).catch((error) => {
         this.platform.log.warn(error);
       });
