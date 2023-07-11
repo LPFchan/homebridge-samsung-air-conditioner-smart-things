@@ -12,14 +12,23 @@ export class SamsungACPlatformAccessory {
     On: 'on',
     Off: 'off',
   };
-
+  
   private deviceMode = {
-    Cool: 'cool',
+    Cool: 'aIComfort',
     Dry: 'dry',
     Fan: 'wind',
     Auto: 'aIComfort',
   };
 
+  // deviceMode fixed to aIComfort
+  // private deviceMode = {
+  //   Cool: 'cool',
+  //   Dry: 'dry',
+  //   Fan: 'wind',
+  //   Auto: 'aIComfort',
+  // };
+
+  // FanV2 Disabled
   // private fanMode = {
   //   Auto: { name: 'auto', rotation: 0 },
   //   Low: { name: 'low', rotation: 25 },
@@ -153,7 +162,7 @@ export class SamsungACPlatformAccessory {
 
     this.humidityService.getCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity)
       .onGet(this.handleCurrentHumidityGet.bind(this));
-  }
+  }  // constructor ends
 
   /**
    * Handle requests to get the current value of the "Active" characteristic of the Heater Cooler Service
