@@ -76,8 +76,8 @@ export class SamsungACPlatformAccessory {
       // Current Heater-Cooler State
       // 0:inactive  1:idle  2:heating  3:cooling
       .setProps({
-        maxValue: 0,
-        minValue: 3, 
+        minValue: 0,
+        maxValue: 3, 
         validValues: [0,1,3]
       })
       .onGet(this.handleCurrentHeaterCoolerStateGet.bind(this));
@@ -86,8 +86,8 @@ export class SamsungACPlatformAccessory {
       // Target Heater-Cooler State
       // 0:auto  1:heat  2:cool
       .setProps({
-        maxValue: 0,
-        minValue: 2,
+        minValue: 0,
+        maxValue: 2,
         validValues: [0,2]
       })
       .onGet(this.handleTargetHeaterCoolerStateGet.bind(this))
