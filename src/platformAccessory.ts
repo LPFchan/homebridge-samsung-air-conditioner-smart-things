@@ -75,13 +75,13 @@ export class SamsungACPlatformAccessory {
     this.acService.getCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState)
       // Current Heater-Cooler State
       // 0:inactive  1:idle  2:heating  3:cooling
-      .setProps(validValues: [0,1,3])
+      .setProps(validValues: [0,1,3],)
       .onGet(this.handleCurrentHeaterCoolerStateGet.bind(this));
 
     this.acService.getCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState)
       // Target Heater-Cooler State
       // 0:auto  1:heat  2:cool
-      .setProps(validValues: [0,2])
+      .setProps(validValues: [0,2],)
       .onGet(this.handleTargetHeaterCoolerStateGet.bind(this))
       .onSet(this.handleTargetHeaterCoolerStateSet.bind(this));
       
