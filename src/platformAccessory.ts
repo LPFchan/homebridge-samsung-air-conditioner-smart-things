@@ -217,12 +217,12 @@ export class SamsungACPlatformAccessory {
     await SamsungAPI.getDeviceStatus(this.accessory.context.device.deviceId, this.accessory.context.token)
       .then((status) => { // feed the output from above
         if (status === this.states.On) { // if API returns 'on',
-          return this.platform.Characteristic.CurrentHeaterCoolerState.ACTIVE; 
+          currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.ACTIVE; 
           // return this.handleCurrentHeaterCoolerStateGet(); 
           // // return "this.handleCurrentHeaterCoolerStateGet()" as currentMode
           // // does this execute "this.handleCurrentHeaterCoolerStateGet()" as well?
         } else { // if not
-          return this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE; 
+          currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE; 
           // return this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE; 
           // // return "this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE" as currentMode
         }
