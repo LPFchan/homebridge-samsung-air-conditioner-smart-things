@@ -1,6 +1,6 @@
-# homebridge-samsung-air-conditioner-smart-things
+# homebridge-samsung-air-conditioner-smartthings
 
-Homebridge plugin for controlling Samsung Air Conditioner using the [smartthings api](https://smartthings.developer.samsung.com/docs/api-ref/st-api.html#tag/Devices). This setup doesn't require a smartthings hub, but all the interactions with the devices are done through the api, not on your local network.
+Homebridge plugin for controlling Samsung Air Conditioner using the [SmartThings API](https://smartthings.developer.samsung.com/docs/api-ref/st-api.html#tag/Devices). This setup doesn't require a SmartThings Hub, but all the interactions with the devices are done through the API, not on your local network.
 
 This fork intends to strip away most of the optional components and make it a "dumb" thermostat device.
 
