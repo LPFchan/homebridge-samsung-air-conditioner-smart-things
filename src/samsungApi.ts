@@ -43,6 +43,13 @@ export class SamsungAPI {
     return humidity.value;
   }
 
+  static async getDeviceMode(deviceId, token) {
+    const {
+      data: { airConditionerMode = { } } = {},
+    } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/airConditionerMode/status`, this.setToken(token));
+    return airConditionerMode.value;
+  }
+  
   static async setDeviceMode(deviceId, mode, token) {
     // possible modes: "aIComfort", "cool", "dry", "wind"
     const data = {
