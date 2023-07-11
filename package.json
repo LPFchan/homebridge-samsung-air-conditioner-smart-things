@@ -2,7 +2,7 @@
   "private": false,
   "displayName": "Homebridge Samsung Air Conditioner SmartThings",
   "name": "homebridge-samsung-air-conditioner-smartthings",
-  "version": "mod1",
+  "version": "0.1",
   "description": "Homebridge plugin for controlling Samsung Air Conditioner using the SmartThings API.",
   "license": "Apache-2.0",
   "repository": {
