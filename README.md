@@ -24,11 +24,11 @@ This fork intends to strip away most of the optional components and make it a "d
 - Turning AC on and off
 - Getting and setting target temperature
 - Getting current temperature
-~~- Getting and setting AC mode~~
-~~- Turning the fan on and off~~
-~~- Getting and setting fan operation mode (manual / automatic)~~
-~~- Getting and setting rotation speed of the fan~~
-  ~~- A target fan speed of automatic will report with a rotation speed of 0% as the actual rotation speed cannot be determined.~~
-~~- Getting and setting oscillation mode~~
-~~- Getting and setting WindFree mode (if supported)~~
+- ~~Getting and setting AC mode~~
+- ~~Turning the fan on and off~~
+- ~~Getting and setting fan operation mode (manual / automatic)~~
+- ~~Getting and setting rotation speed of the fan~~
+  - ~~A target fan speed of automatic will report with a rotation speed of 0% as the actual rotation speed cannot be determined.~~
+- ~~Getting and setting oscillation mode~~
+- ~~Getting and setting WindFree mode (if supported)~~
 - Getting current humidity ~~(if enabled)~~
