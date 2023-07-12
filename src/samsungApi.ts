@@ -135,8 +135,6 @@ export class SamsungAPI {
   				'command': 'execute', 
   				'arguments': [
   					"mode/vs/0",{
-  						"rt": ["x.com.samsung.da.mode"],
-              "if": ["oic.if.baseline", "oic.if.a"],
   						"x.com.samsung.da.options":["Operation_Family", "Blooming_3"]
   					}
   				]
