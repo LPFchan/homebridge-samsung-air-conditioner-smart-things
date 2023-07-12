@@ -499,7 +499,7 @@ export class SamsungACPlatformAccessory {
     if (statusValue === 1) { // this.platform.Characteristic.SwingMode.SWING_ENABLED) {
       await SamsungAPI.setFanSolo(this.accessory.context.device.deviceId, this.accessory.context.token);
       // set it back to auto again
-      if (currentmode === this.platform.Characteristic.TargetHeaterCoolerState.AUTO) {
+      if (currentMode === this.platform.Characteristic.TargetHeaterCoolerState.AUTO) {
         this.handleTargetHeaterCoolerStateSet(this.platform.Characteristic.TargetHeaterCoolerState.AUTO);
       }
     } else {
