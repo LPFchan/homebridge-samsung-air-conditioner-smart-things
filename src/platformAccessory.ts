@@ -86,6 +86,7 @@ export class SamsungACPlatformAccessory {
         minValue: 0,
         maxValue: 2,
         validValues: [0,2]
+        // validValues: [0] // auto only
       })
       .onGet(this.handleTargetHeaterCoolerStateGet.bind(this))
       .onSet(this.handleTargetHeaterCoolerStateSet.bind(this));
@@ -350,13 +351,14 @@ export class SamsungACPlatformAccessory {
   async handleTargetHeaterCoolerStateSet(value) {
     let modeValue = this.deviceMode.Auto;
     switch (value) {
-      case this.platform.Characteristic.TargetHeaterCoolerState.AUTO: {
-        modeValue = this.deviceMode.Auto; // added AUTO case
+      case this.platform.Characteristic.TargetHeaterCoolerState.AUTO: { // added AUTO case
+        await SamsungAPI.setDeviceModeAuto(this.accessory.context.device.deviceId, this.accessory.context.token);
         break;
       }
       case this.platform.Characteristic.TargetHeaterCoolerState.COOL: {
-        modeValue = this.deviceMode.Cool;
-        break;
+        // modeValue = this.deviceMode.Auto;
+        // await SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token);
+        break; // cool mode is non-functional
       }
       // case this.platform.Characteristic.TargetHeaterCoolerState.HEAT: {
       //   modeValue = this.deviceMode.Heat;
@@ -364,8 +366,6 @@ export class SamsungACPlatformAccessory {
       // }
     }
     
-    // sending the request to samsungApi.ts
-    await SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token);
     await this.handleHeaterCoolerActiveSet(this.platform.Characteristic.Active.ACTIVE);
   }
 
