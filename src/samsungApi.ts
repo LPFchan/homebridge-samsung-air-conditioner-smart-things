@@ -59,7 +59,7 @@ export class SamsungAPI {
 
     // set to auto
     const data2 = {
-      'commands' : [{'capability': 'airConditionerMode', 'command': 'setAirConditionerMode', 'arguments': 'aIComfort'}],
+      'commands' : [{'capability': 'airConditionerMode', 'command': 'setAirConditionerMode', 'arguments': aIComfort}],
     };
     await Axios.post(`${HOST}/${deviceId}/commands`, data2, this.setToken(token)); 
 
