@@ -1,4 +1,4 @@
-// aIComfort 28c upper+lower open
+// cool 28c upper open
 {
     "components": {
         "main": {
@@ -32,8 +32,8 @@
                     "timestamp": "2022-08-09T02:34:12.698Z"
                 },
                 "airConditionerMode": {
-                    "value": "aIComfort",
-                    "timestamp": "2023-07-12T05:43:11.087Z"
+                    "value": "cool",
+                    "timestamp": "2023-07-12T05:44:26.946Z"
                 }
             },
             "custom.spiMode": {
@@ -242,16 +242,16 @@
             "powerConsumptionReport": {
                 "powerConsumption": {
                     "value": {
-                        "energy": 320348,
-                        "deltaEnergy": 2,
-                        "power": 147.0,
-                        "powerEnergy": 11.2800000111262,
-                        "persistedEnergy": 320348,
+                        "energy": 320390,
+                        "deltaEnergy": 42,
+                        "power": 497.0,
+                        "powerEnergy": 31.047502495249113,
+                        "persistedEnergy": 320390,
                         "energySaved": 0,
-                        "start": "2023-07-12T05:30:26Z",
-                        "end": "2023-07-12T05:31:33Z"
+                        "start": "2023-07-12T05:31:33Z",
+                        "end": "2023-07-12T05:44:13Z"
                     },
-                    "timestamp": "2023-07-12T05:31:33.701Z"
+                    "timestamp": "2023-07-12T05:44:13.400Z"
                 }
             },
             "custom.autoCleaningMode": {
@@ -265,17 +265,17 @@
                 "data": {
                     "value": {
                         "payload": {
-                            "rt": ["x.com.samsung.da.mode"],
+                            "rt": ["x.com.samsung.da.availablecontrolsets"],
                             "if": ["oic.if.baseline", "oic.if.a"],
-                            "x.com.samsung.da.supportedModes": ["AIComfort", "Cool", "Dry", "Wind"],
-                            "x.com.samsung.da.modes": ["AIComfort"],
-                            "x.com.samsung.da.options": ["Operation_Family", "Blooming_3", "OnTimer_0", "OffTimer_0", "Sleep_8", "ArtificialWorking_On", "ComfortAICooling_On", "AiTempChanged_On", "AiTemp_240", "welcomecare_Off", "Panel_Close", "Weather_Off", "Volume_Mute", "StopAutoClean_Set", "DiagnosisAI_Off", "Display_Off", "ProgressDiagnosisAI_1", "ResultDiagnosisAI_Normal", "Service_Off", "SmartCoolClean_Off", "ProgressSmartClean_0", "OutDoorVentil_Off", "FreezeAlarmSetting_On", "DesiredFreezeAlarm_240", "OptionCode_529", "ExtendOptionCode_0", "RacInfo_None", "RacInfo_None_Second", "ModelInfo_16K_BORA_VENT2", "UpdateAllow_NotAllowed", "EnergySaveIcon_On", "DurationOn_358", "welcomecareElapsedTime_0", "welcomecareThresholdTemp_0", "welcomecareStartDate_0000", "welcomecareEndDate_0000", "welcomecareSeason_None"]
+                            "x.com.samsung.da.sets": "1D1700B4012C0100424804000000",
+                            "x.com.samsung.da.id": "FAC",
+                            "x.com.samsung.da.version": "1.0"
                         }
                     },
                     "data": {
-                        "href": "/mode/vs/0"
+                        "href": "/availablecontrolsets/vs/0"
                     },
-                    "timestamp": "2023-07-12T05:43:23.520Z"
+                    "timestamp": "2023-07-12T05:44:27.159Z"
                 }
             },
             "sec.wifiConfiguration": {
