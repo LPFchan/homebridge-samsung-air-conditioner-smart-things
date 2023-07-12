@@ -1,4 +1,4 @@
-// aIComfort 27c upper open
+// aIComfort 27c upper+lower open
 {
     "components": {
         "main": {
@@ -33,7 +33,7 @@
                 },
                 "airConditionerMode": {
                     "value": "aIComfort",
-                    "timestamp": "2023-07-12T05:31:23.671Z"
+                    "timestamp": "2023-07-12T05:36:49.200Z"
                 }
             },
             "custom.spiMode": {
@@ -265,17 +265,17 @@
                 "data": {
                     "value": {
                         "payload": {
-                            "rt": ["x.com.samsung.da.realtimenotiforclient"],
+                            "rt": ["x.com.samsung.da.mode"],
                             "if": ["oic.if.baseline", "oic.if.a"],
-                            "x.com.samsung.da.timeforshortnoti": "10",
-                            "x.com.samsung.da.longnotisubscription": "false",
-                            "x.com.samsung.da.periodicnotisubscription": "true"
+                            "x.com.samsung.da.supportedModes": ["AIComfort", "Cool", "Dry", "Wind"],
+                            "x.com.samsung.da.modes": ["AIComfort"],
+                            "x.com.samsung.da.options": ["Operation_Family", "Blooming_3", "OnTimer_0", "OffTimer_0", "Sleep_8", "ArtificialWorking_On", "ComfortAICooling_On", "AiTempChanged_On", "AiTemp_240", "welcomecare_Off", "Panel_Close", "Weather_Off", "Volume_Mute", "StopAutoClean_Set", "DiagnosisAI_Off", "Display_Off", "ProgressDiagnosisAI_1", "ResultDiagnosisAI_Normal", "Service_Off", "SmartCoolClean_Off", "ProgressSmartClean_0", "OutDoorVentil_Off", "FreezeAlarmSetting_On", "DesiredFreezeAlarm_240", "OptionCode_529", "ExtendOptionCode_0", "RacInfo_None", "RacInfo_None_Second", "ModelInfo_16K_BORA_VENT2", "UpdateAllow_NotAllowed", "EnergySaveIcon_On", "DurationOn_352", "welcomecareElapsedTime_0", "welcomecareThresholdTemp_0", "welcomecareStartDate_0000", "welcomecareEndDate_0000", "welcomecareSeason_None"]
                         }
                     },
                     "data": {
-                        "href": "/realtimenotiforclient/vs/0"
+                        "href": "/mode/vs/0"
                     },
-                    "timestamp": "2023-07-12T05:35:30.137Z"
+                    "timestamp": "2023-07-12T05:37:00.376Z"
                 }
             },
             "sec.wifiConfiguration": {
@@ -572,7 +572,7 @@
                 "coolingSetpoint": {
                     "value": 27,
                     "unit": "C",
-                    "timestamp": "2023-07-12T05:31:26.612Z"
+                    "timestamp": "2023-07-12T05:36:53.006Z"
                 }
             },
             "samsungce.alwaysOnSensing": {
