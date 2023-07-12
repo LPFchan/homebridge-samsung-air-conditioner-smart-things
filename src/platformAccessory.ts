@@ -479,7 +479,8 @@ export class SamsungACPlatformAccessory {
    */
   
   async handleSwingModeGet() {
-    let currentValue = 0; // this.platform.Characteristic.SwingMode.SWING_DISABLED;
+    const currentValue = 0; 
+    // let currentValue = this.platform.Characteristic.SwingMode.SWING_DISABLED;
     // await SamsungAPI.getFanMode(this.accessory.context.device.deviceId, this.accessory.context.token)
     //   .then((FanMode) => {
     //     if (FanMode === this.FanMode.Dual) {
