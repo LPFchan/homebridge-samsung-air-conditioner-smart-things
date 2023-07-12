@@ -355,7 +355,7 @@ export class SamsungACPlatformAccessory {
 
   async handleTargetHeaterCoolerStateSet(value) {
     let modeValue = this.deviceMode.Auto;
-    if (value === this.platform.Characteristic.TargetHeaterCoolerState.AUTO: { // added AUTO case
+    if (value === this.platform.Characteristic.TargetHeaterCoolerState.AUTO) { // added AUTO case
       await SamsungAPI.setDeviceModeAuto(this.accessory.context.device.deviceId, this.accessory.context.token);
       break;
     }
