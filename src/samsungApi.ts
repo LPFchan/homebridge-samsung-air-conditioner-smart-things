@@ -42,7 +42,23 @@ export class SamsungAPI {
     return humidity.value;
   }
 
-  static async getDeviceMode(deviceId, token) {
+  static async getDesiredTemperature(deviceId, token) {
+    const {
+      data: { coolingSetpoint = { } } = {},
+    } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/thermostatCoolingSetpoint/status`, this.setToken(token));
+    return coolingSetpoint.value;
+  }
+
+  static async setDesiredTemperature(deviceId, temperature, token) {
+    // data type: integer
+    const data = {
+      'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': [temperature]}],
+    };
+
+    await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
+  }
+
+    static async getDeviceMode(deviceId, token) {
     const {
       data: { airConditionerMode = { } } = {},
     } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/airConditionerMode/status`, this.setToken(token));
@@ -84,22 +100,6 @@ export class SamsungAPI {
 
   }
 
-  static async getDesiredTemperature(deviceId, token) {
-    const {
-      data: { coolingSetpoint = { } } = {},
-    } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/thermostatCoolingSetpoint/status`, this.setToken(token));
-    return coolingSetpoint.value;
-  }
-
-  static async setDesiredTemperature(deviceId, temperature, token) {
-    // data type: integer
-    const data = {
-      'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': [temperature]}],
-    };
-
-    await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
-  }
-
   // get blossom info
   static async getFanMode(deviceId, token) {
     const {
@@ -117,8 +117,6 @@ export class SamsungAPI {
   				'command': 'execute', 
   				'arguments': [
   					"mode/vs/0",{
-  						"rt": ["x.com.samsung.da.mode"],
-              "if": ["oic.if.baseline", "oic.if.a"],
   						"x.com.samsung.da.options":["Operation_Solo", "Blooming_1"]
   					}
   				]
