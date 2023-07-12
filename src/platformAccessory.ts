@@ -476,8 +476,8 @@ export class SamsungACPlatformAccessory {
   async handleSwingModeGet() {
     let currentValue = this.platform.Characteristic.SwingMode.SWING_DISABLED;
     // await SamsungAPI.getFanMode(this.accessory.context.device.deviceId, this.accessory.context.token)
-    //   .then((fanMode) => {
-    //     if (fanMode === this.FanMode.Dual) {
+    //   .then((FanMode) => {
+    //     if (FanMode === this.FanMode.Dual) {
     //       currentValue = this.platform.Characteristic.SwingMode.SWING_ENABLED;
     //     }
     //   }).catch((error) => {
@@ -488,7 +488,7 @@ export class SamsungACPlatformAccessory {
 
   async handleSwingModeSet(value) {
     const statusValue = value
-    if (statusValue === 1) {
+    if (statusValue === this.platform.Characteristic.SwingMode.SWING_ENABLED) {
       await SamsungAPI.setFanSolo(this.accessory.context.device.deviceId, this.accessory.context.token);
     } else {
       await SamsungAPI.setFanDual(this.accessory.context.device.deviceId, this.accessory.context.token);
