@@ -291,25 +291,25 @@ export class SamsungACPlatformAccessory {
     let currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.IDLE; // also returned for "auto" mode
     await SamsungAPI.getDeviceMode(this.accessory.context.device.deviceId, this.accessory.context.token)
       .then((deviceMode) => {
-        switch (deviceMode) {
-          case this.deviceMode.Auto: { // only Auto is permitted as COOLING
+        if (deviceMode === this.deviceMode.Auto) { // only Auto is permitted as COOLING
             currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.COOLING;
             break;
-          }
+        }
           // Heating Disabled
           // case this.deviceMode.Heat: {
           //   currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.HEATING;
           //   break;
           // }
-          case this.deviceMode.Cool:
-          case this.deviceMode.Dry:
-          case this.deviceMode.Fan: {
-            currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE;
-            // currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.IDLE; // changed INACTIVE to IDLE
-            break;
-          }
+            
+          // case this.deviceMode.Cool:
+          // case this.deviceMode.Dry:
+          // case this.deviceMode.Fan: {
+          
+        else {
+          currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE;
+          // currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.IDLE; // changed INACTIVE to IDLE
+          break;
         }
-        
         this.acService.getCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState)
           .updateValue(currentValue);
       }).catch((error) => {
@@ -332,21 +332,18 @@ export class SamsungACPlatformAccessory {
     let currentValue = this.platform.Characteristic.TargetHeaterCoolerState.AUTO;
     await SamsungAPI.getDeviceMode(this.accessory.context.device.deviceId, this.accessory.context.token)
       .then((deviceMode) => {
-        switch (deviceMode) {
-          case this.deviceMode.Dry:
-          case this.deviceMode.Cool: {
-            currentValue = this.platform.Characteristic.TargetHeaterCoolerState.COOL;
-            break;
-          }
+        if (deviceMode === this.deviceMode.Auto) {
+          currentValue = this.platform.Characteristic.TargetHeaterCoolerState.AUTO; // added AUTO return
+          break;
+        } 
+        else { // anything else than auto = cool mode
+          currentValue = this.platform.Characteristic.TargetHeaterCoolerState.COOL;
+          break;
+        }
           // case this.deviceMode.Heat: {
           //   currentValue = this.platform.Characteristic.TargetHeaterCoolerState.HEAT;
           //   break;
-          // }
-          case this.deviceMode.Auto: {
-            currentValue = this.platform.Characteristic.TargetHeaterCoolerState.AUTO; // added AUTO return
-            break;
-          }
-        }
+          // } 
         this.acService.getCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState)
           .updateValue(currentValue);
       }).catch((error) => {
@@ -358,23 +355,22 @@ export class SamsungACPlatformAccessory {
 
   async handleTargetHeaterCoolerStateSet(value) {
     let modeValue = this.deviceMode.Auto;
-    switch (value) {
-      case this.platform.Characteristic.TargetHeaterCoolerState.AUTO: { // added AUTO case
-        await SamsungAPI.setDeviceModeAuto(this.accessory.context.device.deviceId, this.accessory.context.token);
-        break;
-      }
-      case this.platform.Characteristic.TargetHeaterCoolerState.COOL: {
-        modeValue = this.deviceMode.Auto;
-        await SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token);
-        break;
-      }
+    if (value === this.platform.Characteristic.TargetHeaterCoolerState.AUTO: { // added AUTO case
+      await SamsungAPI.setDeviceModeAuto(this.accessory.context.device.deviceId, this.accessory.context.token);
+      break;
+    }
+    else {
+      modeValue = this.deviceMode.Cool;
+      await SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token);
+      break;
+    }
       // case this.platform.Characteristic.TargetHeaterCoolerState.HEAT: {
       //   modeValue = this.deviceMode.Heat;
       //   break;
       // }
-    }
-    
-    await this.handleHeaterCoolerActiveSet(this.platform.Characteristic.Active.ACTIVE);
+
+    // why???
+    // await this.handleHeaterCoolerActiveSet(this.platform.Characteristic.Active.ACTIVE);
   }
 
   /**
