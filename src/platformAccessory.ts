@@ -19,15 +19,7 @@ export class SamsungACPlatformAccessory {
     Fan: 'wind',
     Auto: 'aIComfort',
   };
-
-  // deviceMode fixed to aIComfort
-  // private deviceMode = {
-  //   Cool: 'cool',
-  //   Dry: 'dry',
-  //   Fan: 'wind',
-  //   Auto: 'aIComfort',
-  // };
-
+  
   // FanV2 Disabled
   // private fanMode = {
   //   Auto: { name: 'auto', rotation: 0 },
@@ -371,9 +363,9 @@ export class SamsungACPlatformAccessory {
       //   break;
       // }
     }
-
+    
+    // sending the request to samsungApi.ts
     await SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token);
-    // The device (and the fan) is now turned on
     await this.handleHeaterCoolerActiveSet(this.platform.Characteristic.Active.ACTIVE);
   }
 
