@@ -71,15 +71,15 @@ export class SamsungAPI {
     
   }
 
-  // setDeviceMode is non-functional
-  // static async setDeviceMode(deviceId, mode, token) {
-  //   // possible mode value: "aIComfort", "cool", "dry", "wind"
-  //   const data = {
-  //     'commands' : [{'capability': 'airConditionerMode', 'command': 'setAirConditionerMode', 'arguments': [mode]}],
-  //   };
-  //   await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));  
+  // old setDeviceMode
+  static async setDeviceMode(deviceId, mode, token) {
+    // possible mode value: "aIComfort", "cool", "dry", "wind"
+    const data = {
+      'commands' : [{'capability': 'airConditionerMode', 'command': 'setAirConditionerMode', 'arguments': [mode]}],
+    };
+    await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));  
 
-  // }
+  }
 
   static async getDesiredTemperature(deviceId, token) {
     const {
@@ -98,7 +98,7 @@ export class SamsungAPI {
   }
 
   // set upper fan only
-  static async setOperationSolo(deviceId, mode, token) {
+  static async setOperationSolo(deviceId, token) {
     const data = {
       'commands' : [
   			{
@@ -118,7 +118,7 @@ export class SamsungAPI {
   }
   
   // set upper+lower fan
-  static async setOperationFamily(deviceId, mode, token) {
+  static async setOperationDual(deviceId, token) {
     const data = {
       'commands' : [
   			{
