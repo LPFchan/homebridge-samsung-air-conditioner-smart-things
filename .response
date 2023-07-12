@@ -1,4 +1,4 @@
-// aIComfort 24c upper open
+// aIComfort 28c upper open
 {
     "components": {
         "main": {
@@ -275,7 +275,7 @@
                     "data": {
                         "href": "/temperature/current/0"
                     },
-                    "timestamp": "2023-07-12T05:45:11.743Z"
+                    "timestamp": "2023-07-12T05:45:48.885Z"
                 }
             },
             "sec.wifiConfiguration": {
@@ -570,9 +570,9 @@
             },
             "thermostatCoolingSetpoint": {
                 "coolingSetpoint": {
-                    "value": 24,
+                    "value": 28,
                     "unit": "C",
-                    "timestamp": "2023-07-12T05:45:11.678Z"
+                    "timestamp": "2023-07-12T05:45:48.774Z"
                 }
             },
             "samsungce.alwaysOnSensing": {
