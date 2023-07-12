@@ -293,7 +293,7 @@ export class SamsungACPlatformAccessory {
       .then((deviceMode) => {
         if (deviceMode === this.deviceMode.Auto) { // only Auto is permitted as COOLING
             currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.COOLING;
-            break;
+            // break;
         }
           // Heating Disabled
           // case this.deviceMode.Heat: {
@@ -308,7 +308,7 @@ export class SamsungACPlatformAccessory {
         else {
           currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE;
           // currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.IDLE; // changed INACTIVE to IDLE
-          break;
+          // break;
         }
         this.acService.getCharacteristic(this.platform.Characteristic.CurrentHeaterCoolerState)
           .updateValue(currentValue);
@@ -334,11 +334,11 @@ export class SamsungACPlatformAccessory {
       .then((deviceMode) => {
         if (deviceMode === this.deviceMode.Auto) {
           currentValue = this.platform.Characteristic.TargetHeaterCoolerState.AUTO; // added AUTO return
-          break;
+          // break;
         } 
         else { // anything else than auto = cool mode
           currentValue = this.platform.Characteristic.TargetHeaterCoolerState.COOL;
-          break;
+          // break;
         }
           // case this.deviceMode.Heat: {
           //   currentValue = this.platform.Characteristic.TargetHeaterCoolerState.HEAT;
@@ -357,12 +357,12 @@ export class SamsungACPlatformAccessory {
     let modeValue = this.deviceMode.Auto;
     if (value === this.platform.Characteristic.TargetHeaterCoolerState.AUTO) { // added AUTO case
       await SamsungAPI.setDeviceModeAuto(this.accessory.context.device.deviceId, this.accessory.context.token);
-      break;
+      // break;
     }
     else {
       modeValue = this.deviceMode.Cool;
       await SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token);
-      break;
+      // break;
     }
       // case this.platform.Characteristic.TargetHeaterCoolerState.HEAT: {
       //   modeValue = this.deviceMode.Heat;
