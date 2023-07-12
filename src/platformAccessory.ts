@@ -107,11 +107,11 @@ export class SamsungACPlatformAccessory {
     
     // setOperationSolo or setOperationDual
     this.acService.getCharacteristic(this.platform.Characteristic.SwingMode)
-      .setProps({
-        minValue: 0,
-        maxValue: 1,
-        validValues: [0,1]
-      })
+      // .setProps({
+      //   minValue: 0,
+      //   maxValue: 1,
+      //   validValues: [0,1]
+      // })
       .onGet(this.handleSwingModeGet.bind(this))
       .onSet(this.handleSwingModeSet.bind(this));
     
@@ -493,12 +493,18 @@ export class SamsungACPlatformAccessory {
   }
 
   async handleSwingModeSet(value) {
-    const statusValue = value;
-    if (statusValue === 1) { // this.platform.Characteristic.SwingMode.SWING_ENABLED) {
+    let statusValue = value;
+    let currentMode = this.handleTargetHeaterCoolerStateGet();
+    if (statusValue === this.platform.Characteristic.SwingMode.SWING_ENABLED) { // binary: 1
       await SamsungAPI.setFanSolo(this.accessory.context.device.deviceId, this.accessory.context.token);
+      // set it back to auto again
+      if (currentmode === this.platform.Characteristic.TargetHeaterCoolerState.AUTO) {
+        this.handleTargetHeaterCoolerStateSet(this.platform.Characteristic.TargetHeaterCoolerState.AUTO);
+      }
     } else {
       await SamsungAPI.setFanDual(this.accessory.context.device.deviceId, this.accessory.context.token);
     }
+    this.handleTargetHeaterCoolerStateGet();
   }
 
   // FanV2 Disabled
