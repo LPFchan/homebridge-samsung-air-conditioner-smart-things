@@ -98,7 +98,7 @@ export class SamsungAPI {
   }
 
   // get blossom info
-  static async getFanMode(deviceId, token)
+  static async getFanMode(deviceId, token) {
     const {
       data: { airConditionerMode = { } } = {},
     } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/airConditionerMode/status`, this.setToken(token));
