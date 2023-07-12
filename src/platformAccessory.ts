@@ -356,9 +356,9 @@ export class SamsungACPlatformAccessory {
         break;
       }
       case this.platform.Characteristic.TargetHeaterCoolerState.COOL: {
-        // modeValue = this.deviceMode.Auto;
-        // await SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token);
-        break; // cool mode is non-functional
+        modeValue = this.deviceMode.Auto;
+        await SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token);
+        break;
       }
       // case this.platform.Characteristic.TargetHeaterCoolerState.HEAT: {
       //   modeValue = this.deviceMode.Heat;
