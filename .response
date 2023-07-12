@@ -1,4 +1,4 @@
-// aIComfort 27c upper+lower open
+// aIComfort 28c upper+lower open
 {
     "components": {
         "main": {
@@ -33,7 +33,7 @@
                 },
                 "airConditionerMode": {
                     "value": "aIComfort",
-                    "timestamp": "2023-07-12T05:36:49.200Z"
+                    "timestamp": "2023-07-12T05:43:11.087Z"
                 }
             },
             "custom.spiMode": {
@@ -269,13 +269,13 @@
                             "if": ["oic.if.baseline", "oic.if.a"],
                             "x.com.samsung.da.supportedModes": ["AIComfort", "Cool", "Dry", "Wind"],
                             "x.com.samsung.da.modes": ["AIComfort"],
-                            "x.com.samsung.da.options": ["Operation_Family", "Blooming_3", "OnTimer_0", "OffTimer_0", "Sleep_8", "ArtificialWorking_On", "ComfortAICooling_On", "AiTempChanged_On", "AiTemp_240", "welcomecare_Off", "Panel_Close", "Weather_Off", "Volume_Mute", "StopAutoClean_Set", "DiagnosisAI_Off", "Display_Off", "ProgressDiagnosisAI_1", "ResultDiagnosisAI_Normal", "Service_Off", "SmartCoolClean_Off", "ProgressSmartClean_0", "OutDoorVentil_Off", "FreezeAlarmSetting_On", "DesiredFreezeAlarm_240", "OptionCode_529", "ExtendOptionCode_0", "RacInfo_None", "RacInfo_None_Second", "ModelInfo_16K_BORA_VENT2", "UpdateAllow_NotAllowed", "EnergySaveIcon_On", "DurationOn_352", "welcomecareElapsedTime_0", "welcomecareThresholdTemp_0", "welcomecareStartDate_0000", "welcomecareEndDate_0000", "welcomecareSeason_None"]
+                            "x.com.samsung.da.options": ["Operation_Family", "Blooming_3", "OnTimer_0", "OffTimer_0", "Sleep_8", "ArtificialWorking_On", "ComfortAICooling_On", "AiTempChanged_On", "AiTemp_240", "welcomecare_Off", "Panel_Close", "Weather_Off", "Volume_Mute", "StopAutoClean_Set", "DiagnosisAI_Off", "Display_Off", "ProgressDiagnosisAI_1", "ResultDiagnosisAI_Normal", "Service_Off", "SmartCoolClean_Off", "ProgressSmartClean_0", "OutDoorVentil_Off", "FreezeAlarmSetting_On", "DesiredFreezeAlarm_240", "OptionCode_529", "ExtendOptionCode_0", "RacInfo_None", "RacInfo_None_Second", "ModelInfo_16K_BORA_VENT2", "UpdateAllow_NotAllowed", "EnergySaveIcon_On", "DurationOn_358", "welcomecareElapsedTime_0", "welcomecareThresholdTemp_0", "welcomecareStartDate_0000", "welcomecareEndDate_0000", "welcomecareSeason_None"]
                         }
                     },
                     "data": {
                         "href": "/mode/vs/0"
                     },
-                    "timestamp": "2023-07-12T05:37:00.376Z"
+                    "timestamp": "2023-07-12T05:43:23.520Z"
                 }
             },
             "sec.wifiConfiguration": {
@@ -570,9 +570,9 @@
             },
             "thermostatCoolingSetpoint": {
                 "coolingSetpoint": {
-                    "value": 27,
+                    "value": 28,
                     "unit": "C",
-                    "timestamp": "2023-07-12T05:36:53.006Z"
+                    "timestamp": "2023-07-12T05:43:14.666Z"
                 }
             },
             "samsungce.alwaysOnSensing": {
