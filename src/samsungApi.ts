@@ -66,11 +66,11 @@ export class SamsungAPI {
     // fix temp drift when entering auto
     // const data3 = {
     //   'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': [temperature]}],
+    // // };
+    // const data3 = {
+    //   'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': 27}],
     // };
-    const data3 = {
-      'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': 27}],
-    };
-    await Axios.post(`${HOST}/${deviceId}/commands`, data3, this.setToken(token));
+    // await Axios.post(`${HOST}/${deviceId}/commands`, data3, this.setToken(token));
     
   }
 
