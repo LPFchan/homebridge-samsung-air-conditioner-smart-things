@@ -25,7 +25,6 @@ export class SamsungAPI {
     const data = {
       'commands' : [{'capability': 'switch', 'command': status}],
     };
-
     await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
   }
 
@@ -49,15 +48,38 @@ export class SamsungAPI {
     } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/airConditionerMode/status`, this.setToken(token));
     return airConditionerMode.value;
   }
-  
-  static async setDeviceMode(deviceId, mode, token) {
-    // possible modes: "aIComfort", "cool", "dry", "wind"
-    const data = {
-      'commands' : [{'capability': 'airConditionerMode', 'command': 'setAirConditionerMode', 'arguments': [mode]}],
-    };
 
-    await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
+  // special set function for auto
+  static async setDeviceModeAuto(deviceId, token) {
+    // getDesiredTemperature before changing to auto
+    const {
+      data: { coolingSetpoint = { } } = {},
+    } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/thermostatCoolingSetpoint/status`, this.setToken(token));
+    const temperature = coolingSetpoint.value;
+
+    // set to auto
+    const data = {
+      'commands' : [{'capability': 'airConditionerMode', 'command': 'setAirConditionerMode', 'arguments': 'aIComfort'}],
+    };
+    await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token)); 
+
+    // fix temp drift when entering auto
+    const data3 = {
+      'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': [temperature]}],
+    };
+    await Axios.post(`${HOST}/${deviceId}/commands`, data3, this.setToken(token));
+    
   }
+
+  // setDeviceMode is non-functional
+  // static async setDeviceMode(deviceId, mode, token) {
+  //   // possible mode value: "aIComfort", "cool", "dry", "wind"
+  //   const data = {
+  //     'commands' : [{'capability': 'airConditionerMode', 'command': 'setAirConditionerMode', 'arguments': [mode]}],
+  //   };
+  //   await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));  
+
+  // }
 
   static async getDesiredTemperature(deviceId, token) {
     const {
@@ -74,4 +96,45 @@ export class SamsungAPI {
 
     await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
   }
+
+  // set upper fan only
+  static async setOperationSolo(deviceId, mode, token) {
+    const data = {
+      'commands' : [
+  			{
+  				'capability': 'execute', 
+  				'command': 'execute', 
+  				'arguments': [
+  					"mode/vs/0",{
+  						"rt": ["x.com.samsung.da.mode"],
+              "if": ["oic.if.baseline", "oic.if.a"],
+  						"x.com.samsung.da.options":["Operation_Solo", "Blooming_1"]
+  					}
+  				]
+  			}
+  		],
+    };
+  	await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
+  }
+  
+  // set upper+lower fan
+  static async setOperationFamily(deviceId, mode, token) {
+    const data = {
+      'commands' : [
+  			{
+  				'capability': 'execute', 
+  				'command': 'execute', 
+  				'arguments': [
+  					"mode/vs/0",{
+  						"rt": ["x.com.samsung.da.mode"],
+              "if": ["oic.if.baseline", "oic.if.a"],
+  						"x.com.samsung.da.options":["Operation_Family", "Blooming_3"]
+  					}
+  				]
+  			}
+  		],
+    };
+  	await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
+  }
+
 }
