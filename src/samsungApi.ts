@@ -52,10 +52,10 @@ export class SamsungAPI {
   // special set function for auto
   static async setDeviceModeAuto(deviceId, token) {
     // getDesiredTemperature before changing to auto
-    // const {
-    //   data: { coolingSetpoint = { } } = {},
-    // } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/thermostatCoolingSetpoint/status`, this.setToken(token));
-    // const temperature = coolingSetpoint.value;
+    const {
+      data: { coolingSetpoint = { } } = {},
+    } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/thermostatCoolingSetpoint/status`, this.setToken(token));
+    const temperature = coolingSetpoint.value;
 
     // set to auto
     const data2 = {
@@ -64,13 +64,13 @@ export class SamsungAPI {
     await Axios.post(`${HOST}/${deviceId}/commands`, data2, this.setToken(token)); 
 
     // fix temp drift when entering auto
-    // const data3 = {
-    //   'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': [temperature]}],
-    // // };
+    const data3 = {
+      'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': [temperature]}],
+    };
     // const data3 = {
     //   'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': 27}],
     // };
-    // await Axios.post(`${HOST}/${deviceId}/commands`, data3, this.setToken(token));
+    await Axios.post(`${HOST}/${deviceId}/commands`, data3, this.setToken(token));
     
   }
 
