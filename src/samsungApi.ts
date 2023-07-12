@@ -58,7 +58,7 @@ export class SamsungAPI {
     await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
   }
 
-    static async getDeviceMode(deviceId, token) {
+  static async getDeviceMode(deviceId, token) {
     const {
       data: { airConditionerMode = { } } = {},
     } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/airConditionerMode/status`, this.setToken(token));
@@ -68,10 +68,7 @@ export class SamsungAPI {
   // special set function for auto
   static async setDeviceModeAuto(deviceId, token) {
     // getDesiredTemperature before changing to auto
-    const {
-      data: { coolingSetpoint = { } } = {},
-    } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/thermostatCoolingSetpoint/status`, this.setToken(token));
-    const temperature = coolingSetpoint.value;
+    const temperature = this.getDesiredTemperature(deviceId, token);
 
     // set to auto
     const data2 = {
@@ -80,13 +77,7 @@ export class SamsungAPI {
     await Axios.post(`${HOST}/${deviceId}/commands`, data2, this.setToken(token)); 
 
     // fix temp drift when entering auto
-    const data3 = {
-      'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': [temperature]}],
-    };
-    // const data3 = {
-    //   'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': 27}],
-    // };
-    await Axios.post(`${HOST}/${deviceId}/commands`, data3, this.setToken(token));
+    this.setDesiredTemperature(deviceId, temperature, token);
     
   }
 
@@ -101,12 +92,12 @@ export class SamsungAPI {
   }
 
   // get blossom info
-  static async getFanMode(deviceId, token) {
-    const {
-      data: { airConditionerMode = { } } = {},
-    } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/airConditionerMode/status`, this.setToken(token));
-    return airConditionerMode.value;
-  }
+  // static async getFanMode(deviceId, token) {
+  //   const {
+  //     data: { airConditionerMode = { } } = {},
+  //   } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/airConditionerMode/status`, this.setToken(token));
+  //   return airConditionerMode.value;
+  // }
   
   // set upper fan only
   static async setFanSolo(deviceId, token) {
