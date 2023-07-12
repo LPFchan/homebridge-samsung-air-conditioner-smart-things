@@ -487,7 +487,7 @@ export class SamsungACPlatformAccessory {
   }
 
   async handleSwingModeSet(value) {
-    const statusValue = value
+    let statusValue = value;
     if (statusValue === this.platform.Characteristic.SwingMode.SWING_ENABLED) {
       await SamsungAPI.setFanSolo(this.accessory.context.device.deviceId, this.accessory.context.token);
     } else {
