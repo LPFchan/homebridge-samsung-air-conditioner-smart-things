@@ -29,10 +29,10 @@ export class SamsungACPlatformAccessory {
   //   Turbo: { name: 'turbo', rotation: 100 },
   // };
 
-  // private swingMode = {
-  //   All: 'all',
-  //   Fixed: 'fixed',
-  // };
+  private FanMode = {
+    Solo: 'Operation_Solo',
+    Dual: 'Operation_Family',
+  };
 
   // private windFreeMode = {
   //   Off: 'off', // maps to SWING_ENABLED
@@ -104,7 +104,12 @@ export class SamsungACPlatformAccessory {
       .setProps(temperatureProps)
       .onSet(this.handleCoolingTemperatureSet.bind(this))
       .onGet(this.handleCoolingTemperatureGet.bind(this));
-
+    
+    // setOperationSolo or setOperationDual
+    this.acService.getCharacteristic(this.platform.Characteristic.SwingMode)
+      .onGet(this.handleSwingModeGet.bind(this))
+      .onSet(this.handleSwingModeSet.bind(this));
+    
     // Heating Disabled
     // this.acService.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
     //   .setProps(temperatureProps)
@@ -161,7 +166,7 @@ export class SamsungACPlatformAccessory {
     //     .onSet(this.handleSwingModeSet.bind(this))
     //     .onGet(this.handleSwingModeGet.bind(this));
     // }
-
+    
     // Humidity Service always enabled
     this.humidityService = this.accessory.getService(this.platform.Service.HumiditySensor)
       || this.accessory.addService(this.platform.Service.HumiditySensor);
@@ -196,6 +201,9 @@ export class SamsungACPlatformAccessory {
    *    handleCoolingTemperatureSet
    *    handleCoolingTemperatureGet
    *
+   * Characteristic.SwingMode
+   *    handleSwingModeGet
+   *    handleSwingModeSet
    */
 
   /**
@@ -459,6 +467,36 @@ export class SamsungACPlatformAccessory {
       temp = SamsungACPlatformAccessory.toFahrenheit(temp);
     }
     await SamsungAPI.setDesiredTemperature(this.accessory.context.device.deviceId, temp, this.accessory.context.token);
+  }
+  
+  /** 
+   * Characteristic.SwingMode
+   *    handleSwingModeGet
+   *    handleSwingModeSet
+   *    0 = swing off = dual
+   *    1 = swing on = solo
+   */
+  
+  async handleSwingModeGet() {
+    let currentValue = this.platform.Characteristic.SwingMode.SWING_DISABLED;
+    // await SamsungAPI.getFanMode(this.accessory.context.device.deviceId, this.accessory.context.token)
+    //   .then((fanMode) => {
+    //     if (fanMode === this.FanMode.Dual) {
+    //       currentValue = this.platform.Characteristic.SwingMode.SWING_ENABLED;
+    //     }
+    //   }).catch((error) => {
+    //     this.platform.log.warn(error);
+    //   });
+    return currentValue;
+  }
+
+  async handleSwingModeSet(value) {
+    const statusValue = value
+    if (statusValue === 1) {
+      await SamsungAPI.setFanSolo(this.accessory.context.device.deviceId, this.accessory.context.token);
+    } else {
+      await SamsungAPI.setFanDual(this.accessory.context.device.deviceId, this.accessory.context.token);
+    }
   }
 
   // FanV2 Disabled
