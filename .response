@@ -1,4 +1,4 @@
-// cool 28c upper open
+// aIComfort 24c upper open
 {
     "components": {
         "main": {
@@ -32,8 +32,8 @@
                     "timestamp": "2022-08-09T02:34:12.698Z"
                 },
                 "airConditionerMode": {
-                    "value": "cool",
-                    "timestamp": "2023-07-12T05:44:26.946Z"
+                    "value": "aIComfort",
+                    "timestamp": "2023-07-12T05:45:11.460Z"
                 }
             },
             "custom.spiMode": {
@@ -265,17 +265,17 @@
                 "data": {
                     "value": {
                         "payload": {
-                            "rt": ["x.com.samsung.da.availablecontrolsets"],
-                            "if": ["oic.if.baseline", "oic.if.a"],
-                            "x.com.samsung.da.sets": "1D1700B4012C0100424804000000",
-                            "x.com.samsung.da.id": "FAC",
-                            "x.com.samsung.da.version": "1.0"
+                            "rt": ["oic.r.temperature"],
+                            "if": ["oic.if.baseline", "oic.if.s"],
+                            "range": [18.0, 30.0],
+                            "units": "C",
+                            "temperature": 27.0
                         }
                     },
                     "data": {
-                        "href": "/availablecontrolsets/vs/0"
+                        "href": "/temperature/current/0"
                     },
-                    "timestamp": "2023-07-12T05:44:27.159Z"
+                    "timestamp": "2023-07-12T05:45:11.743Z"
                 }
             },
             "sec.wifiConfiguration": {
@@ -570,9 +570,9 @@
             },
             "thermostatCoolingSetpoint": {
                 "coolingSetpoint": {
-                    "value": 28,
+                    "value": 24,
                     "unit": "C",
-                    "timestamp": "2023-07-12T05:43:14.666Z"
+                    "timestamp": "2023-07-12T05:45:11.678Z"
                 }
             },
             "samsungce.alwaysOnSensing": {
