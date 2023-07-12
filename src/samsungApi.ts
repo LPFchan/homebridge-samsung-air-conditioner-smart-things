@@ -97,8 +97,16 @@ export class SamsungAPI {
     await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
   }
 
+  // get blossom info
+  static async getFanMode(deviceId, token)
+    const {
+      data: { airConditionerMode = { } } = {},
+    } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/airConditionerMode/status`, this.setToken(token));
+    return airConditionerMode.value;
+  }
+  
   // set upper fan only
-  static async setOperationSolo(deviceId, token) {
+  static async setFanSolo(deviceId, token) {
     const data = {
       'commands' : [
   			{
@@ -118,7 +126,7 @@ export class SamsungAPI {
   }
   
   // set upper+lower fan
-  static async setOperationDual(deviceId, token) {
+  static async setFanDual(deviceId, token) {
     const data = {
       'commands' : [
   			{
