@@ -20,6 +20,11 @@ export class SamsungACPlatformAccessory {
     Auto: 'aIComfort',
   };
   
+  private FanMode = {
+    Solo: 'Operation_Solo',
+    Dual: 'Operation_Family',
+  };
+
   // FanV2 Disabled
   // private fanMode = {
   //   Auto: { name: 'auto', rotation: 0 },
@@ -28,11 +33,6 @@ export class SamsungACPlatformAccessory {
   //   High: { name: 'high', rotation: 75 },
   //   Turbo: { name: 'turbo', rotation: 100 },
   // };
-
-  private FanMode = {
-    Solo: 'Operation_Solo',
-    Dual: 'Operation_Family',
-  };
 
   // private windFreeMode = {
   //   Off: 'off', // maps to SWING_ENABLED
@@ -115,13 +115,14 @@ export class SamsungACPlatformAccessory {
       .onGet(this.handleSwingModeGet.bind(this))
       .onSet(this.handleSwingModeSet.bind(this));
     
-    // Heating Disabled
+    // #region Heating Disabled
     // this.acService.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
     //   .setProps(temperatureProps)
     //   .onSet(this.handleCoolingTemperatureSet.bind(this))
     //   .onGet(this.handleHeatingTemperatureGet.bind(this));
+    // #endregion
 
-    // FanV2 Service Disabled
+    // #region FanV2 Service Disabled
     // /**
     //  *  FanV2 Service
     //  */
@@ -171,6 +172,7 @@ export class SamsungACPlatformAccessory {
     //     .onSet(this.handleSwingModeSet.bind(this))
     //     .onGet(this.handleSwingModeGet.bind(this));
     // }
+    // #endregion
     
     // Humidity Service always enabled
     this.humidityService = this.accessory.getService(this.platform.Service.HumiditySensor)
@@ -300,7 +302,7 @@ export class SamsungACPlatformAccessory {
             currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.COOLING;
             // break;
         }
-          // Heating Disabled
+          // #region Heating Disabled
           // case this.deviceMode.Heat: {
           //   currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.HEATING;
           //   break;
@@ -309,6 +311,7 @@ export class SamsungACPlatformAccessory {
           // case this.deviceMode.Cool:
           // case this.deviceMode.Dry:
           // case this.deviceMode.Fan: {
+          // #endregion
           
         else {
           currentValue = this.platform.Characteristic.CurrentHeaterCoolerState.INACTIVE;
@@ -361,8 +364,11 @@ export class SamsungACPlatformAccessory {
   async handleTargetHeaterCoolerStateSet(value) {
     let modeValue = this.deviceMode.Auto;
     if (value === this.platform.Characteristic.TargetHeaterCoolerState.AUTO) { // added AUTO case
-      await SamsungAPI.setDeviceModeAuto(this.accessory.context.device.deviceId, this.accessory.context.token);
-      this.handleCoolingTemperatureGet(); // update DesiredTemperature
+      modeValue = this.deviceMode.Auto;
+      const temp = await this.handleCoolingTemperatureGet();
+      await SamsungAPI.setDeviceMode(this.accessory.context.device.deviceId, modeValue, this.accessory.context.token);
+      await this.handleCoolingTemperatureSet(temp); // fix temp drift when entering auto mode
+      await this.handleCoolingTemperatureGet(); // update DesiredTemperature
       // break;
     }
     else {
@@ -480,8 +486,7 @@ export class SamsungACPlatformAccessory {
    */
   
   async handleSwingModeGet() {
-    const currentValue = 0; 
-    // let currentValue = this.platform.Characteristic.SwingMode.SWING_DISABLED;
+    const currentValue = this.platform.Characteristic.SwingMode.SWING_DISABLED; 
     // await SamsungAPI.getFanMode(this.accessory.context.device.deviceId, this.accessory.context.token)
     //   .then((FanMode) => {
     //     if (FanMode === this.FanMode.Dual) {
@@ -495,19 +500,28 @@ export class SamsungACPlatformAccessory {
 
   async handleSwingModeSet(value) {
     const statusValue = value;
-    let currentMode = this.handleTargetHeaterCoolerStateGet();
+    let currentMode = await this.handleTargetHeaterCoolerStateGet();
     if (statusValue === 1) { // this.platform.Characteristic.SwingMode.SWING_ENABLED) {
       await SamsungAPI.setFanSolo(this.accessory.context.device.deviceId, this.accessory.context.token);
       // set it back to auto again
       if (currentMode === this.platform.Characteristic.TargetHeaterCoolerState.AUTO) {
-        this.handleTargetHeaterCoolerStateSet(this.platform.Characteristic.TargetHeaterCoolerState.AUTO);
+        await this.handleTargetHeaterCoolerStateSet(currentMode);
       }
     } else {
       await SamsungAPI.setFanDual(this.accessory.context.device.deviceId, this.accessory.context.token);
+      await this.handleTargetHeaterCoolerStateSet(currentMode);
     }
-    this.handleTargetHeaterCoolerStateGet();
+    await this.handleTargetHeaterCoolerStateGet();
   }
 
+  private static toCelsius(fTemperature) {
+    return Math.round((5/9) * (fTemperature - 32));
+  }
+
+  private static toFahrenheit(cTemperature){
+    return Math.round((cTemperature * 1.8) + 32);
+  }
+  
   // FanV2 Disabled
   // /**
   //  * Handle requests to get the current value of the "Active" characteristic of the Fan V2 Service
@@ -808,11 +822,4 @@ export class SamsungACPlatformAccessory {
   //   await SamsungAPI.setFanOscillationMode(this.accessory.context.device.deviceId, statusValue, this.accessory.context.token);
   // }
 
-  private static toCelsius(fTemperature) {
-    return Math.round((5/9) * (fTemperature - 32));
-  }
-
-  private static toFahrenheit(cTemperature){
-    return Math.round((cTemperature * 1.8) + 32);
-  }
 }

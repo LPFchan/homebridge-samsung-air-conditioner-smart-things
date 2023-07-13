@@ -65,31 +65,6 @@ export class SamsungAPI {
     return airConditionerMode.value;
   }
 
-  // special set function for auto
-  static async setDeviceModeAuto(deviceId, token) {
-    // getDesiredTemperature before changing to auto
-    const {
-      data: { coolingSetpoint = { } } = {},
-    } = await Axios.get(`${HOST}/${deviceId}/components/main/capabilities/thermostatCoolingSetpoint/status`, this.setToken(token));
-    const temperature = coolingSetpoint.value;
-
-    // set to auto
-    const data2 = {
-      'commands' : [{'capability': 'airConditionerMode', 'command': 'setAirConditionerMode', 'arguments': ['aIComfort']}],
-    };
-    await Axios.post(`${HOST}/${deviceId}/commands`, data2, this.setToken(token)); 
-
-    // fix temp drift when entering auto
-    const data3 = {
-      'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': [temperature]}],
-    };
-    // const data3 = {
-    //   'commands' : [{'capability': 'thermostatCoolingSetpoint', 'command': 'setCoolingSetpoint', 'arguments': 27}],
-    // };
-    await Axios.post(`${HOST}/${deviceId}/commands`, data3, this.setToken(token));
-    
-  }
-
   // old setDeviceMode
   static async setDeviceMode(deviceId, mode, token) {
     // possible mode value: "aIComfort", "cool", "dry", "wind"
@@ -112,36 +87,34 @@ export class SamsungAPI {
   static async setFanSolo(deviceId, token) {
     const data = {
       'commands' : [
-  			{
-  				'capability': 'execute', 
-  				'command': 'execute', 
-  				'arguments': [
-  					"mode/vs/0",{
-  						"x.com.samsung.da.options":["Operation_Solo", "Blooming_1"]
-  					}
-  				]
-  			}
-  		],
+      {
+        'capability': 'execute', 
+        'command': 'execute', 
+        'arguments': [
+          "mode/vs/0",{
+            "x.com.samsung.da.options":["Operation_Solo", "Blooming_1"]
+          }
+        ]
+      }
+    ],
     };
-  	await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
+    await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
   }
   
   // set upper+lower fan
   static async setFanDual(deviceId, token) {
     const data = {
-      'commands' : [
-  			{
-  				'capability': 'execute', 
-  				'command': 'execute', 
-  				'arguments': [
-  					"mode/vs/0",{
-  						"x.com.samsung.da.options":["Operation_Family", "Blooming_3"]
-  					}
-  				]
-  			}
-  		],
+      'commands' : [{
+        'capability': 'execute', 
+        'command': 'execute', 
+        'arguments': [
+          "mode/vs/0",{
+            "x.com.samsung.da.options":["Operation_Family", "Blooming_3"]
+          }
+        ]
+      }],
     };
-  	await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
+    await Axios.post(`${HOST}/${deviceId}/commands`, data, this.setToken(token));
   }
 
 }
