@@ -21,8 +21,8 @@ export class SamsungACPlatformAccessory {
   };
   
   private FanMode = {
-    Solo: 'Operation_Solo',
-    Dual: 'Operation_Family',
+    Solo: '"Operation_Solo", "Blooming_1"',
+    Dual: '"Operation_Family", "Blooming_3"',
   };
 
   // FanV2 Disabled
@@ -446,7 +446,6 @@ export class SamsungACPlatformAccessory {
       }).catch((error) => {
         this.platform.log.warn(error);
       });
-
     return currentValue;
   }
   
@@ -499,16 +498,24 @@ export class SamsungACPlatformAccessory {
   }
 
   async handleSwingModeSet(value) {
-    const statusValue = value;
+    const swingValue = value;
     let currentMode = await this.handleTargetHeaterCoolerStateGet();
-    if (statusValue === 1) { // this.platform.Characteristic.SwingMode.SWING_ENABLED) {
-      await SamsungAPI.setFanSolo(this.accessory.context.device.deviceId, this.accessory.context.token);
-      // set it back to auto again
+    
+    if (swingValue === 1) { // this.platform.Characteristic.SwingMode.SWING_ENABLED
+      
+      // if currentMode is auto, set it back to auto again
       if (currentMode === this.platform.Characteristic.TargetHeaterCoolerState.AUTO) {
-        await this.handleTargetHeaterCoolerStateSet(currentMode);
+        const temperature = await this.handleCoolingTemperatureGet();
+        await SamsungAPI.setFanModeAuto(this.accessory.context.device.deviceId, this.FanMode.Solo, temperature, this.accessory.context.token);
       }
-    } else {
-      await SamsungAPI.setFanDual(this.accessory.context.device.deviceId, this.accessory.context.token);
+      
+      else {
+        await SamsungAPI.setFanMode(this.accessory.context.device.deviceId, this.FanMode.Solo, this.accessory.context.token);
+      }
+    } 
+    
+    else { // swingValue === 1 // this.platform.Characteristic.SwingMode.SWING_DISABLED
+      await SamsungAPI.setFanMode(this.accessory.context.device.deviceId, this.FanMode.Dual, this.accessory.context.token);
       await this.handleTargetHeaterCoolerStateSet(currentMode);
     }
     await this.handleTargetHeaterCoolerStateGet();
